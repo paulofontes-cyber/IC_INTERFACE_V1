@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Avaliar Turma</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Seletor de Turma */
+        .turma-selector {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .selector-grupo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .selector-label {
+            font-weight: 500;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .selector-select {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: var(--cor-branco);
+            color: var(--cor-texto-escuro);
+        }
+
+        /* Lista de Alunos */
+        .alunos-container {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .container-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .container-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .filtro-busca {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            width: 250px;
+        }
+
+        .aluno-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .aluno-item:hover {
+            background-color: var(--cor-fundo-claro);
+        }
+
+        .aluno-item:last-child {
+            border-bottom: none;
+        }
+
+        .aluno-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .aluno-info {
+            flex: 1;
+        }
+
+        .aluno-nome {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            font-size: 1.125rem;
+        }
+
+        .aluno-matricula {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-pendente {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #f59e0b;
+        }
+
+        .status-concluida {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+
+        .aluno-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        .btn-success {
+            background: var(--cor-sucesso);
+            color: var(--cor-branco);
+        }
+
+        /* Modal de Avaliação */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-avaliacao {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--sombra-forte);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .btn-fechar {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--cor-texto-claro);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .competencia-avaliacao {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: var(--cor-fundo-claro);
+        }
+
+        .competencia-titulo {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .competencia-descricao {
+            color: var(--cor-texto-claro);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .rubrica-opcoes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+        }
+
+        .rubrica-opcao {
+            position: relative;
+        }
+
+        .rubrica-opcao input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .rubrica-opcao label {
+            display: block;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        .rubrica-opcao input[type="radio"]:checked + label {
+            background: var(--gradiente-hero);
+            border-color: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        .modal-actions {
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .selector-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .filtro-busca {
+                width: 100%;
+            }
+
+            .aluno-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .rubrica-opcoes {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-role">Professor</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="dashboard-professor.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <span class="nav-icon">👥</span>
+                        Avaliar Turma
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="relatorios-turma.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        Relatórios
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="realizarLogout()">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Avaliar Turma</h1>
+                <p class="page-subtitle">Avalie o desenvolvimento dos alunos usando rubricas padronizadas</p>
+            </div>
+
+            <!-- Seletor de Turma -->
+            <div class="turma-selector">
+                <div class="selector-grid">
+                    <div class="selector-grupo">
+                        <label class="selector-label">Turma</label>
+                        <select class="selector-select" id="seletorTurma" onchange="carregarAlunos()">
+                            <option value="">Selecione uma turma</option>
+                            <option value="ENG001">Engenharia de Software - Turma A</option>
+                            <option value="GPR002">Gestão de Projetos - Turma B</option>
+                            <option value="MET003">Metodologia Ágil - Turma C</option>
+                        </select>
+                    </div>
+                    <div class="selector-grupo">
+                        <label class="selector-label">Período</label>
+                        <select class="selector-select">
+                            <option value="2024.2">2024.2</option>
+                            <option value="2024.1">2024.1</option>
+                        </select>
+                    </div>
+                    <div class="selector-grupo">
+                        <label class="selector-label">Tipo de Avaliação</label>
+                        <select class="selector-select">
+                            <option value="formativa">Formativa</option>
+                            <option value="somativa">Somativa</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Alunos -->
+            <div class="alunos-container" id="alunosContainer" style="display: none;">
+                <div class="container-header">
+                    <h3 class="container-title">Alunos da Turma</h3>
+                    <input type="text" class="filtro-busca" placeholder="Buscar aluno..." onkeyup="filtrarAlunos(this.value)">
+                </div>
+                
+                <div id="listaAlunos">
+                    <!-- Conteúdo será preenchido dinamicamente -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal de Avaliação -->
+    <div id="modalAvaliacao" class="modal-overlay">
+        <div class="modal-avaliacao">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitulo">Avaliar Aluno</h3>
+                <button class="btn-fechar" onclick="fecharModalAvaliacao()">&times;</button>
+            </div>
+            
+            <div class="modal-body" id="modalBody">
+                <!-- Conteúdo será preenchido dinamicamente -->
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="fecharModalAvaliacao()">Cancelar</button>
+                <button class="btn btn-primary" onclick="salvarAvaliacao()">Salvar Avaliação</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados simulados dos alunos
+        const alunosPorTurma = {
+            'ENG001': [
+                { id: 1, nome: 'Ana Silva Santos', matricula: '2021001', status: 'pendente' },
+                { id: 2, nome: 'Bruno Costa Lima', matricula: '2021002', status: 'concluida' },
+                { id: 3, nome: 'Carlos Eduardo Souza', matricula: '2021003', status: 'pendente' },
+                { id: 4, nome: 'Diana Ferreira Alves', matricula: '2021004', status: 'pendente' },
+                { id: 5, nome: 'Eduardo Martins Rocha', matricula: '2021005', status: 'concluida' }
+            ],
+            'GPR002': [
+                { id: 6, nome: 'Fernanda Oliveira Cruz', matricula: '2021006', status: 'pendente' },
+                { id: 7, nome: 'Gabriel Santos Pereira', matricula: '2021007', status: 'concluida' },
+                { id: 8, nome: 'Helena Costa Ribeiro', matricula: '2021008', status: 'pendente' }
+            ],
+            'MET003': [
+                { id: 9, nome: 'Igor Almeida Silva', matricula: '2021009', status: 'concluida' },
+                { id: 10, nome: 'Julia Fernandes Lima', matricula: '2021010', status: 'concluida' }
+            ]
+        };
+
+        // Competências para avaliação
+        const competencias = [
+            { id: 'autoconhecimento', nome: 'Autoconhecimento', descricao: 'Capacidade de reconhecer e compreender suas próprias emoções, valores, forças e limitações.' },
+            { id: 'autorregulacao', nome: 'Autorregulação', descricao: 'Habilidade de gerenciar suas emoções, impulsos e comportamentos de forma eficaz.' },
+            { id: 'resiliencia', nome: 'Resiliência', descricao: 'Capacidade de se adaptar e se recuperar diante de adversidades, desafios e mudanças.' },
+            { id: 'empatia', nome: 'Empatia', descricao: 'Habilidade de compreender e compartilhar os sentimentos e perspectivas dos outros.' },
+            { id: 'comunicacao', nome: 'Comunicação Eficaz', descricao: 'Capacidade de expressar ideias de forma clara e ouvir ativamente os outros.' },
+            { id: 'colaboracao', nome: 'Colaboração', descricao: 'Habilidade de trabalhar efetivamente em equipe e contribuir para objetivos comuns.' }
+        ];
+
+        let alunoAtual = null;
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (userData) {
+                document.getElementById('userName').textContent = userData.nome;
+            } else {
+                window.location.href = 'index.html';
+            }
+
+            // Verificar se há turma selecionada na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const turma = urlParams.get('turma');
+            if (turma) {
+                document.getElementById('seletorTurma').value = turma;
+                carregarAlunos();
+            }
+        });
+
+        function carregarAlunos() {
+            const turmaId = document.getElementById('seletorTurma').value;
+            const container = document.getElementById('alunosContainer');
+            const listaAlunos = document.getElementById('listaAlunos');
+
+            if (!turmaId) {
+                container.style.display = 'none';
+                return;
+            }
+
+            const alunos = alunosPorTurma[turmaId] || [];
+            container.style.display = 'block';
+
+            listaAlunos.innerHTML = alunos.map(aluno => `
+                <div class="aluno-item" data-nome="${aluno.nome.toLowerCase()}">
+                    <div class="aluno-header">
+                        <div class="aluno-info">
+                            <div class="aluno-nome">${aluno.nome}</div>
+                            <div class="aluno-matricula">Matrícula: ${aluno.matricula}</div>
+                        </div>
+                        <div class="status-badge status-${aluno.status}">
+                            ${aluno.status === 'pendente' ? 'Pendente' : 'Concluída'}
+                        </div>
+                    </div>
+                    <div class="aluno-actions">
+                        <button class="btn btn-primary" onclick="abrirModalAvaliacao(${aluno.id}, '${aluno.nome}')">
+                            📝 Avaliar
+                        </button>
+                        ${aluno.status === 'concluida' ? `
+                            <button class="btn btn-success" onclick="verAvaliacao(${aluno.id})">
+                                👁️ Ver Avaliação
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrarAlunos(termo) {
+            const alunos = document.querySelectorAll('.aluno-item');
+            const termoBusca = termo.toLowerCase();
+
+            alunos.forEach(aluno => {
+                const nome = aluno.getAttribute('data-nome');
+                if (nome.includes(termoBusca)) {
+                    aluno.style.display = 'block';
+                } else {
+                    aluno.style.display = 'none';
+                }
+            });
+        }
+
+        function abrirModalAvaliacao(alunoId, nomeAluno) {
+            alunoAtual = alunoId;
+            document.getElementById('modalTitulo').textContent = `Avaliar: ${nomeAluno}`;
+            
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = competencias.map(comp => `
+                <div class="competencia-avaliacao">
+                    <div class="competencia-titulo">${comp.nome}</div>
+                    <div class="competencia-descricao">${comp.descricao}</div>
+                    <div class="rubrica-opcoes">
+                        <div class="rubrica-opcao">
+                            <input type="radio" name="${comp.id}" value="1" id="${comp.id}_1">
+                            <label for="${comp.id}_1">1 - Iniciante</label>
+                        </div>
+                        <div class="rubrica-opcao">
+                            <input type="radio" name="${comp.id}" value="2" id="${comp.id}_2">
+                            <label for="${comp.id}_2">2 - Básico</label>
+                        </div>
+                        <div class="rubrica-opcao">
+                            <input type="radio" name="${comp.id}" value="3" id="${comp.id}_3">
+                            <label for="${comp.id}_3">3 - Intermediário</label>
+                        </div>
+                        <div class="rubrica-opcao">
+                            <input type="radio" name="${comp.id}" value="4" id="${comp.id}_4">
+                            <label for="${comp.id}_4">4 - Avançado</label>
+                        </div>
+                        <div class="rubrica-opcao">
+                            <input type="radio" name="${comp.id}" value="5" id="${comp.id}_5">
+                            <label for="${comp.id}_5">5 - Excelente</label>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('modalAvaliacao').style.display = 'flex';
+        }
+
+        function fecharModalAvaliacao() {
+            document.getElementById('modalAvaliacao').style.display = 'none';
+            alunoAtual = null;
+        }
+
+        function salvarAvaliacao() {
+            if (!alunoAtual) return;
+
+            const avaliacao = {};
+            let todasPreenchidas = true;
+
+            competencias.forEach(comp => {
+                const selected = document.querySelector(`input[name="${comp.id}"]:checked`);
+                if (selected) {
+                    avaliacao[comp.id] = parseInt(selected.value);
+                } else {
+                    todasPreenchidas = false;
+                }
+            });
+
+            if (!todasPreenchidas) {
+                alert('Por favor, avalie todas as competências.');
+                return;
+            }
+
+            // Salvar avaliação (simulação)
+            const avaliacoes = JSON.parse(localStorage.getItem('avaliacoesProfessor') || '[]');
+            avaliacoes.push({
+                alunoId: alunoAtual,
+                data: new Date().toISOString(),
+                competencias: avaliacao,
+                tipo: 'professor'
+            });
+            localStorage.setItem('avaliacoesProfessor', JSON.stringify(avaliacoes));
+
+            alert('Avaliação salva com sucesso!');
+            fecharModalAvaliacao();
+            carregarAlunos(); // Recarregar para atualizar status
+        }
+
+        function verAvaliacao(alunoId) {
+            alert(`Visualizar avaliação do aluno ${alunoId} será implementado em breve!`);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function realizarLogout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalAvaliacao');
+            if (event.target === modal) {
+                fecharModalAvaliacao();
+            }
+        }
+    </script>
+</body>
+</html>

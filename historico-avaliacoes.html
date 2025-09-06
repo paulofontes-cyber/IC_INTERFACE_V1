@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Histórico de Avaliações</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Filtros */
+        .filtros-container {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .filtros-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filtro-grupo {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filtro-label {
+            font-weight: 500;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .filtro-select {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: var(--cor-branco);
+            color: var(--cor-texto-escuro);
+        }
+
+        .btn-filtrar {
+            padding: 0.75rem 1.5rem;
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .btn-filtrar:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        /* Gráfico de Evolução */
+        .grafico-evolucao {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+
+        .grafico-titulo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 1rem;
+        }
+
+        .grafico-placeholder {
+            height: 300px;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-texto-claro);
+            font-weight: 600;
+        }
+
+        /* Lista de Avaliações */
+        .avaliacoes-lista {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .lista-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .lista-titulo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .avaliacao-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .avaliacao-item:hover {
+            background-color: var(--cor-fundo-claro);
+        }
+
+        .avaliacao-item:last-child {
+            border-bottom: none;
+        }
+
+        .avaliacao-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .avaliacao-data {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .avaliacao-tipo {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .avaliacao-resumo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .resumo-item {
+            text-align: center;
+        }
+
+        .resumo-valor {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cor-primaria);
+        }
+
+        .resumo-label {
+            font-size: 0.75rem;
+            color: var(--cor-texto-claro);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .avaliacao-acoes {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-acao {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--cor-primaria);
+            background: transparent;
+            color: var(--cor-primaria);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-acao:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        /* Estado Vazio */
+        .estado-vazio {
+            text-align: center;
+            padding: 3rem;
+            color: var(--cor-texto-claro);
+        }
+
+        .estado-vazio-icone {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .estado-vazio-titulo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .filtros-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .avaliacao-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .avaliacao-resumo {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-role">Aluno</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="dashboard-aluno.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="autoavaliacao.html" class="nav-link">
+                        <span class="nav-icon">📝</span>
+                        Autoavaliação
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <span class="nav-icon">📈</span>
+                        Histórico
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="realizarLogout()">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Histórico de Avaliações</h1>
+                <p class="page-subtitle">Acompanhe sua evolução ao longo do tempo</p>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros-container">
+                <div class="filtros-grid">
+                    <div class="filtro-grupo">
+                        <label class="filtro-label">Período</label>
+                        <select class="filtro-select" id="filtroPeriodo">
+                            <option value="todos">Todos os períodos</option>
+                            <option value="2024.2">2024.2</option>
+                            <option value="2024.1">2024.1</option>
+                            <option value="2023.2">2023.2</option>
+                            <option value="2023.1">2023.1</option>
+                        </select>
+                    </div>
+                    <div class="filtro-grupo">
+                        <label class="filtro-label">Semestre</label>
+                        <select class="filtro-select" id="filtroSemestre">
+                            <option value="todos">Todos os semestres</option>
+                            <option value="1">1º Semestre</option>
+                            <option value="2">2º Semestre</option>
+                        </select>
+                    </div>
+                    <div class="filtro-grupo">
+                        <label class="filtro-label">Tipo</label>
+                        <select class="filtro-select" id="filtroTipo">
+                            <option value="todos">Todos os tipos</option>
+                            <option value="autoavaliacao">Autoavaliação</option>
+                            <option value="professor">Avaliação do Professor</option>
+                        </select>
+                    </div>
+                    <div class="filtro-grupo">
+                        <button class="btn-filtrar" onclick="aplicarFiltros()">
+                            🔍 Filtrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Evolução -->
+            <div class="grafico-evolucao">
+                <h3 class="grafico-titulo">Evolução das Competências</h3>
+                <div class="grafico-placeholder">
+                    📈 Gráfico Comparativo de Evolução
+                    <br><small>Visualização da progressão ao longo do tempo</small>
+                </div>
+            </div>
+
+            <!-- Lista de Avaliações -->
+            <div class="avaliacoes-lista">
+                <div class="lista-header">
+                    <h3 class="lista-titulo">Avaliações Realizadas</h3>
+                </div>
+                
+                <div id="listaAvaliacoes">
+                    <!-- Conteúdo será preenchido dinamicamente -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Dados simulados para demonstração
+        const avaliacoesSimuladas = [
+            {
+                data: '2024-11-15T10:30:00Z',
+                tipo: 'autoavaliacao',
+                competencias: {
+                    autoconhecimento: 4,
+                    autorregulacao: 3,
+                    resiliencia: 4,
+                    empatia: 5,
+                    comunicacao: 3,
+                    conflitos: 3,
+                    pensamento: 4,
+                    criatividade: 4,
+                    decisao: 3,
+                    colaboracao: 5,
+                    adaptabilidade: 4,
+                    tempo: 3
+                }
+            },
+            {
+                data: '2024-09-20T14:15:00Z',
+                tipo: 'professor',
+                competencias: {
+                    autoconhecimento: 3,
+                    autorregulacao: 3,
+                    resiliencia: 3,
+                    empatia: 4,
+                    comunicacao: 3,
+                    conflitos: 2,
+                    pensamento: 4,
+                    criatividade: 3,
+                    decisao: 3,
+                    colaboracao: 4,
+                    adaptabilidade: 3,
+                    tempo: 2
+                }
+            },
+            {
+                data: '2024-07-10T09:45:00Z',
+                tipo: 'autoavaliacao',
+                competencias: {
+                    autoconhecimento: 3,
+                    autorregulacao: 2,
+                    resiliencia: 3,
+                    empatia: 4,
+                    comunicacao: 2,
+                    conflitos: 2,
+                    pensamento: 3,
+                    criatividade: 3,
+                    decisao: 2,
+                    colaboracao: 4,
+                    adaptabilidade: 3,
+                    tempo: 2
+                }
+            }
+        ];
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (userData) {
+                document.getElementById('userName').textContent = userData.nome;
+            } else {
+                window.location.href = 'index.html';
+            }
+
+            // Carregar avaliações (simuladas + localStorage)
+            carregarAvaliacoes();
+        });
+
+        function carregarAvaliacoes() {
+            // Combinar avaliações simuladas com as do localStorage
+            const avaliacoesLocal = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
+            const todasAvaliacoes = [...avaliacoesSimuladas, ...avaliacoesLocal];
+            
+            renderizarAvaliacoes(todasAvaliacoes);
+        }
+
+        function renderizarAvaliacoes(avaliacoes) {
+            const container = document.getElementById('listaAvaliacoes');
+            
+            if (avaliacoes.length === 0) {
+                container.innerHTML = `
+                    <div class="estado-vazio">
+                        <div class="estado-vazio-icone">📊</div>
+                        <div class="estado-vazio-titulo">Nenhuma avaliação encontrada</div>
+                        <p>Você ainda não possui avaliações registradas. Faça sua primeira autoavaliação!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = avaliacoes.map(avaliacao => {
+                const data = new Date(avaliacao.data);
+                const dataFormatada = data.toLocaleDateString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric'
+                });
+
+                const competenciasArray = Object.values(avaliacao.competencias);
+                const media = (competenciasArray.reduce((a, b) => a + b, 0) / competenciasArray.length).toFixed(1);
+                const maxNota = Math.max(...competenciasArray);
+                const minNota = Math.min(...competenciasArray);
+
+                const tipoLabel = avaliacao.tipo === 'autoavaliacao' ? 'Autoavaliação' : 'Avaliação do Professor';
+
+                return `
+                    <div class="avaliacao-item">
+                        <div class="avaliacao-header">
+                            <div class="avaliacao-data">${dataFormatada}</div>
+                            <div class="avaliacao-tipo">${tipoLabel}</div>
+                        </div>
+                        
+                        <div class="avaliacao-resumo">
+                            <div class="resumo-item">
+                                <div class="resumo-valor">${media}</div>
+                                <div class="resumo-label">Média Geral</div>
+                            </div>
+                            <div class="resumo-item">
+                                <div class="resumo-valor">${maxNota}</div>
+                                <div class="resumo-label">Maior Nota</div>
+                            </div>
+                            <div class="resumo-item">
+                                <div class="resumo-valor">${minNota}</div>
+                                <div class="resumo-label">Menor Nota</div>
+                            </div>
+                            <div class="resumo-item">
+                                <div class="resumo-valor">${competenciasArray.length}</div>
+                                <div class="resumo-label">Competências</div>
+                            </div>
+                        </div>
+                        
+                        <div class="avaliacao-acoes">
+                            <button class="btn-acao" onclick="verDetalhes('${avaliacao.data}')">
+                                👁️ Ver Detalhes
+                            </button>
+                            <button class="btn-acao" onclick="gerarRelatorio('${avaliacao.data}')">
+                                📄 Relatório
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function aplicarFiltros() {
+            const periodo = document.getElementById('filtroPeriodo').value;
+            const semestre = document.getElementById('filtroSemestre').value;
+            const tipo = document.getElementById('filtroTipo').value;
+
+            // Combinar avaliações simuladas com as do localStorage
+            const avaliacoesLocal = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
+            let todasAvaliacoes = [...avaliacoesSimuladas, ...avaliacoesLocal];
+
+            // Aplicar filtros
+            if (tipo !== 'todos') {
+                todasAvaliacoes = todasAvaliacoes.filter(av => av.tipo === tipo);
+            }
+
+            // Aqui você implementaria os filtros de período e semestre
+            // Por simplicidade, mantendo todas as avaliações
+
+            renderizarAvaliacoes(todasAvaliacoes);
+        }
+
+        function verDetalhes(dataAvaliacao) {
+            alert(`Detalhes da avaliação de ${new Date(dataAvaliacao).toLocaleDateString('pt-BR')} serão exibidos em uma modal.`);
+        }
+
+        function gerarRelatorio(dataAvaliacao) {
+            alert(`Relatório da avaliação de ${new Date(dataAvaliacao).toLocaleDateString('pt-BR')} será gerado.`);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function realizarLogout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

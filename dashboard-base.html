@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Cards Base */
+        .card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Grid System */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        /* Botões */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-role" id="userRole">Carregando...</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu" id="navMenu">
+                <!-- Menu será preenchido dinamicamente -->
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="realizarLogout()">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                <p class="page-subtitle" id="pageSubtitle">Bem-vindo ao sistema GPTICS</p>
+            </div>
+
+            <div id="pageContent">
+                <!-- Conteúdo será carregado dinamicamente -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sistema de navegação base
+        class DashboardSystem {
+            constructor() {
+                this.currentUser = this.getCurrentUser();
+                this.currentPage = 'dashboard';
+                this.init();
+            }
+
+            getCurrentUser() {
+                const userData = localStorage.getItem('usuarioLogado');
+                if (userData) {
+                    return JSON.parse(userData);
+                }
+                // Redirecionar para login se não estiver logado
+                window.location.href = 'index.html';
+                return null;
+            }
+
+            init() {
+                this.setupUserInfo();
+                this.setupNavigation();
+                this.loadPage(this.currentPage);
+            }
+
+            setupUserInfo() {
+                document.getElementById('userName').textContent = this.currentUser.nome;
+                document.getElementById('userRole').textContent = this.currentUser.perfil;
+            }
+
+            setupNavigation() {
+                const navMenus = {
+                    aluno: [
+                        { id: 'dashboard', icon: '📊', label: 'Dashboard', active: true },
+                        { id: 'autoavaliacao', icon: '📝', label: 'Autoavaliação' },
+                        { id: 'historico', icon: '📈', label: 'Histórico' }
+                    ],
+                    professor: [
+                        { id: 'dashboard', icon: '📊', label: 'Dashboard', active: true },
+                        { id: 'avaliar-turma', icon: '👥', label: 'Avaliar Turma' },
+                        { id: 'relatorios-turma', icon: '📋', label: 'Relatórios' }
+                    ],
+                    coordenador: [
+                        { id: 'dashboard', icon: '📊', label: 'Dashboard', active: true },
+                        { id: 'relatorios-agregados', icon: '📈', label: 'Relatórios' },
+                        { id: 'gestao-competencias', icon: '⚙️', label: 'Competências' }
+                    ],
+                    gestor: [
+                        { id: 'dashboard', icon: '📊', label: 'Dashboard', active: true },
+                        { id: 'relatorios-agregados', icon: '📈', label: 'Relatórios' },
+                        { id: 'gestao-competencias', icon: '⚙️', label: 'Competências' }
+                    ]
+                };
+
+                const menu = navMenus[this.currentUser.perfil] || navMenus.aluno;
+                const navMenuElement = document.getElementById('navMenu');
+                
+                navMenuElement.innerHTML = menu.map(item => `
+                    <div class="nav-item">
+                        <a href="#" class="nav-link ${item.active ? 'active' : ''}" 
+                           onclick="dashboard.navigateTo('${item.id}')">
+                            <span class="nav-icon">${item.icon}</span>
+                            ${item.label}
+                        </a>
+                    </div>
+                `).join('');
+            }
+
+            navigateTo(pageId) {
+                // Remover classe active de todos os links
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                // Adicionar classe active ao link clicado
+                event.target.closest('.nav-link').classList.add('active');
+
+                this.currentPage = pageId;
+                this.loadPage(pageId);
+            }
+
+            loadPage(pageId) {
+                // Esta função será expandida para carregar conteúdo específico
+                const pageContent = document.getElementById('pageContent');
+                const pageTitle = document.getElementById('pageTitle');
+                const pageSubtitle = document.getElementById('pageSubtitle');
+
+                // Conteúdo base para cada página
+                const pages = {
+                    dashboard: {
+                        title: 'Dashboard',
+                        subtitle: 'Visão geral do sistema',
+                        content: '<div class="card"><div class="card-header"><h3 class="card-title">Bem-vindo!</h3></div><p>Conteúdo do dashboard será carregado aqui.</p></div>'
+                    }
+                };
+
+                const page = pages[pageId] || pages.dashboard;
+                pageTitle.textContent = page.title;
+                pageSubtitle.textContent = page.subtitle;
+                pageContent.innerHTML = page.content;
+            }
+        }
+
+        // Funções globais
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function realizarLogout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Inicializar sistema
+        let dashboard;
+        document.addEventListener('DOMContentLoaded', () => {
+            dashboard = new DashboardSystem();
+        });
+    </script>
+</body>
+</html>

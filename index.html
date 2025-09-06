@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Sistema de Competências Socioemocionais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header e Navegação */
+        .cabecalho {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .navegacao {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradiente-principal);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .menu-navegacao {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .menu-navegacao a {
+            text-decoration: none;
+            color: var(--cor-texto-escuro);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .menu-navegacao a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradiente-principal);
+            transition: width 0.3s ease;
+        }
+
+        .menu-navegacao a:hover::after {
+            width: 100%;
+        }
+
+        .botoes-navegacao {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .botao-login {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .botao-login:hover {
+            background: var(--cor-secundaria);
+        }
+
+        /* Seção Hero */
+        .secao-hero {
+            background: var(--gradiente-hero);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .secao-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .conteudo-hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            z-index: 2;
+        }
+
+        .texto-hero {
+            color: var(--cor-branco);
+        }
+
+        .titulo-principal {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        .subtitulo-hero {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.2s forwards;
+        }
+
+        .botoes-hero {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .botao-cta {
+            display: inline-block;
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: var(--sombra-media);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.4s forwards;
+        }
+
+        .botao-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-forte);
+        }
+
+        .botao-cta-secundario {
+            background: var(--cor-secundaria);
+            color: var(--cor-branco);
+        }
+
+        .botao-cta-secundario:hover {
+            background: var(--cor-primaria);
+        }
+
+        .visual-hero {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard-mockup {
+            background: var(--cor-branco);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--sombra-forte);
+            width: 100%;
+            max-width: 500px;
+            opacity: 0;
+            animation: fadeInUp 1s ease 0.6s forwards;
+        }
+
+        /* Seção Características */
+        .secao-caracteristicas {
+            padding: 6rem 0;
+            background: var(--cor-fundo-claro);
+        }
+
+        .titulo-secao {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .subtitulo-secao {
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--cor-texto-claro);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .grid-caracteristicas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .cartao-caracteristica {
+            background: var(--cor-branco);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--sombra-suave);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        .cartao-caracteristica:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .icone-caracteristica {
+            width: 60px;
+            height: 60px;
+            background: var(--gradiente-principal);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--cor-branco);
+        }
+
+        .titulo-caracteristica {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .descricao-caracteristica {
+            color: var(--cor-texto-claro);
+            line-height: 1.6;
+        }
+
+        /* Seção Competências */
+        .secao-competencias {
+            padding: 6rem 0;
+            background: var(--cor-branco);
+        }
+
+        .grid-competencias {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .competencia-item {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .competencia-item:hover {
+            border-color: var(--cor-acento);
+            transform: translateY(-3px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .competencia-titulo {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            font-size: 0.95rem;
+        }
+
+        /* Seção Perfis */
+        .secao-perfis {
+            padding: 6rem 0;
+            background: var(--cor-fundo-claro);
+        }
+
+        .grid-perfis {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .cartao-perfil {
+            background: var(--cor-branco);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--sombra-suave);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cartao-perfil::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradiente-principal);
+        }
+
+        .cartao-perfil:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .titulo-perfil {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .descricao-perfil {
+            color: var(--cor-texto-claro);
+            margin-bottom: 1.5rem;
+        }
+
+        .lista-funcionalidades {
+            list-style: none;
+        }
+
+        .lista-funcionalidades li {
+            color: var(--cor-texto-claro);
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .lista-funcionalidades li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--cor-sucesso);
+            font-weight: bold;
+        }
+
+        /* Seção Estatísticas */
+        .secao-estatisticas {
+            padding: 6rem 0;
+            background: var(--cor-fundo-escuro);
+            color: var(--cor-branco);
+        }
+
+        .grid-estatisticas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .numero-estatistica {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--cor-branco);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .label-estatistica {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Footer */
+        .rodape {
+            background: var(--cor-fundo-escuro);
+            color: var(--cor-branco);
+            padding: 3rem 0 2rem;
+            text-align: center;
+        }
+
+        .conteudo-rodape {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .coluna-rodape h4 {
+            margin-bottom: 1rem;
+            color: var(--cor-branco);
+        }
+
+        .coluna-rodape p {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        .copyright {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Animações */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .dashboard-mockup {
+            animation: fadeInUp 1s ease 0.6s forwards, float 3s ease-in-out infinite;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .menu-navegacao {
+                display: none;
+            }
+
+            .conteudo-hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 3rem;
+            }
+
+            .titulo-principal {
+                font-size: 2.5rem;
+            }
+
+            .grid-caracteristicas {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-competencias {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .grid-perfis {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-estatisticas {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Elementos visuais especiais */
+        .elemento-visual {
+            position: relative;
+        }
+
+        .elemento-visual::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 50%;
+            top: -20px;
+            right: -20px;
+            z-index: -1;
+        }
+
+        .contador {
+            opacity: 0;
+        }
+
+        .contador.visivel {
+            animation: fadeInUp 1s ease forwards;
+        }
+
+        /* Modais */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-login {
+            background: var(--cor-branco);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--sombra-forte);
+            width: 400px;
+            max-width: 90%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-modal {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--gradiente-principal);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .botao-fechar {
+            background: none;
+            border: none;
+            color: var(--cor-texto-escuro);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-bottom: 2rem;
+        }
+
+        .titulo-login {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .subtitulo-login {
+            font-size: 1rem;
+            color: var(--cor-texto-claro);
+            margin-bottom: 2rem;
+        }
+
+        .campo-input {
+            margin-bottom: 1.5rem;
+        }
+
+        .campo-input label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .campo-input input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .campo-input input:focus {
+            border-color: var(--cor-acento);
+        }
+
+        .opcoes-login {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .checkbox-container input {
+            margin-right: 0.5rem;
+        }
+
+        .checkmark {
+            width: 1rem;
+            height: 1rem;
+            background: var(--cor-primaria);
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+        }
+
+        .checkmark::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0.5rem;
+            height: 0.5rem;
+            background: var(--cor-branco);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.3s ease;
+        }
+
+        .checkbox-container input:checked + .checkmark::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .link-esqueci-senha {
+            color: var(--cor-acento);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .link-esqueci-senha:hover {
+            color: var(--cor-primaria);
+        }
+
+        .botao-entrar {
+            width: 100%;
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+            padding: 1rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .botao-entrar:hover {
+            background: var(--cor-secundaria);
+        }
+
+        .lgpd-notice {
+            font-size: 0.8rem;
+            color: var(--cor-texto-claro);
+        }
+
+        .voltar-login {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .voltar-login a {
+            color: var(--cor-acento);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        .voltar-login a:hover {
+            color: var(--cor-primaria);
+        }
+    </style>
+</head>
+<body>
+    <header class="cabecalho">
+        <div class="container">
+            <nav class="navegacao">
+                <div class="logo">GPTICS</div>
+                <ul class="menu-navegacao">
+                    <li><a href="#inicio">Início</a></li>
+                    <li><a href="#caracteristicas">Características</a></li>
+                    <li><a href="#competencias">Competências</a></li>
+                    <li><a href="#perfis">Perfis</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+                <div class="botoes-navegacao">
+                    <button class="botao-login" onclick="abrirModalLogin()">Entrar</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section id="inicio" class="secao-hero">
+        <div class="container">
+            <div class="conteudo-hero">
+                <div class="texto-hero">
+                    <h1 class="titulo-principal">Sistema de Competências Socioemocionais</h1>
+                    <p class="subtitulo-hero">Transforme a educação superior com avaliação inteligente e desenvolvimento contínuo de habilidades essenciais para o sucesso profissional.</p>
+                    <div class="botoes-hero">
+                        <a href="#caracteristicas" class="botao-cta">Descobrir Mais</a>
+                        <button class="botao-cta botao-cta-secundario" onclick="abrirModalLogin()">Fazer Login</button>
+                    </div>
+                </div>
+                <div class="visual-hero">
+                    <div class="dashboard-mockup">
+                        <div style="height: 250px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #64748b; font-weight: 600;">
+                            Dashboard Interativo
+                            <br><small>Visualização de Dados</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="caracteristicas" class="secao-caracteristicas">
+        <div class="container">
+            <h2 class="titulo-secao">Características Principais</h2>
+            <p class="subtitulo-secao">Uma plataforma completa e integrada para o desenvolvimento e acompanhamento de competências socioemocionais</p>
+            
+            <div class="grid-caracteristicas">
+                <div class="cartao-caracteristica elemento-visual">
+                    <div class="icone-caracteristica">📊</div>
+                    <h3 class="titulo-caracteristica">Avaliação Inteligente</h3>
+                    <p class="descricao-caracteristica">Sistema de autoavaliação e avaliação docente com rubricas padronizadas para monitoramento preciso do desenvolvimento das competências.</p>
+                </div>
+                
+                <div class="cartao-caracteristica elemento-visual">
+                    <div class="icone-caracteristica">📈</div>
+                    <h3 class="titulo-caracteristica">Analytics Avançado</h3>
+                    <p class="descricao-caracteristica">Dashboards interativos com KPIs institucionais e relatórios detalhados para apoiar a tomada de decisões estratégicas.</p>
+                </div>
+                
+                <div class="cartao-caracteristica elemento-visual">
+                    <div class="icone-caracteristica">🔒</div>
+                    <h3 class="titulo-caracteristica">Conformidade LGPD</h3>
+                    <p class="descricao-caracteristica">Portal de consentimento integrado e total conformidade com a Lei Geral de Proteção de Dados para máxima segurança.</p>
+                </div>
+                
+                <div class="cartao-caracteristica elemento-visual">
+                    <div class="icone-caracteristica">🎯</div>
+                    <h3 class="titulo-caracteristica">Feedback Personalizado</h3>
+                    <p class="descricao-caracteristica">Planos de ação individualizados e feedback contínuo para acelerar o desenvolvimento de cada estudante.</p>
+                </div>
+                
+                <div class="cartao-caracteristica elemento-visual">
+                    <div class="icone-caracteristica">📱</div>
+                    <h3 class="titulo-caracteristica">Interface Moderna</h3>
+                    <p class="descricao-caracteristica">Design responsivo e intuitivo com abordagem mobile-first e conformidade com diretrizes de acessibilidade.</p>
+                </div>
+                
+                <div class="cartao-caracteristica elemento-visual">
+                    <div class="icone-caracteristica">⚡</div>
+                    <h3 class="titulo-caracteristica">Escalabilidade</h3>
+                    <p class="descricao-caracteristica">Arquitetura robusta preparada para crescimento institucional com performance otimizada e alta disponibilidade.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="competencias" class="secao-competencias">
+        <div class="container">
+            <h2 class="titulo-secao">12 Competências Avaliadas</h2>
+            <p class="subtitulo-secao">Conjunto abrangente de habilidades socioemocionais essenciais para a formação integral</p>
+            
+            <div class="grid-competencias">
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Autoconhecimento</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Autorregulação</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Resiliência</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Empatia</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Comunicação Eficaz</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Resolução de Conflitos</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Pensamento Crítico</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Criatividade</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Tomada de Decisão</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Colaboração</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Adaptabilidade</div>
+                </div>
+                <div class="competencia-item">
+                    <div class="competencia-titulo">Gestão do Tempo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="perfis" class="secao-perfis">
+        <div class="container">
+            <h2 class="titulo-secao">Perfis de Usuário</h2>
+            <p class="subtitulo-secao">Sistema adaptado às necessidades específicas de cada stakeholder educacional</p>
+            
+            <div class="grid-perfis">
+                <div class="cartao-perfil">
+                    <h3 class="titulo-perfil">👨‍🎓 Aluno</h3>
+                    <p class="descricao-perfil">Interface intuitiva para autoconhecimento e desenvolvimento pessoal</p>
+                    <ul class="lista-funcionalidades">
+                        <li>Autoavaliação estruturada</li>
+                        <li>Histórico de progresso</li>
+                        <li>Gráficos de radar personalizados</li>
+                        <li>Planos de ação individuais</li>
+                    </ul>
+                </div>
+                
+                <div class="cartao-perfil">
+                    <h3 class="titulo-perfil">👨‍🏫 Professor</h3>
+                    <p class="descricao-perfil">Ferramentas avançadas para avaliação e acompanhamento de turmas</p>
+                    <ul class="lista-funcionalidades">
+                        <li>Rubricas de avaliação</li>
+                        <li>Relatórios por turma</li>
+                        <li>Monitoramento individual</li>
+                        <li>Analytics de desempenho</li>
+                    </ul>
+                </div>
+                
+                <div class="cartao-perfil">
+                    <h3 class="titulo-perfil">👨‍💼 Coordenador</h3>
+                    <p class="descricao-perfil">Visão estratégica do curso com dados agregados e insights</p>
+                    <ul class="lista-funcionalidades">
+                        <li>Gestão de avaliações</li>
+                        <li>Dados agregados do curso</li>
+                        <li>Identificação de lacunas</li>
+                        <li>Relatórios analíticos</li>
+                    </ul>
+                </div>
+                
+                <div class="cartao-perfil">
+                    <h3 class="titulo-perfil">🏢 Gestor Institucional</h3>
+                    <p class="descricao-perfil">Dashboards executivos com KPIs institucionais para decisões estratégicas</p>
+                    <ul class="lista-funcionalidades">
+                        <li>Painéis estratégicos</li>
+                        <li>KPIs institucionais</li>
+                        <li>Visão organizacional</li>
+                        <li>Suporte à decisão</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="secao-estatisticas">
+        <div class="container">
+            <div class="grid-estatisticas">
+                <div class="estatistica-item">
+                    <span class="numero-estatistica contador" data-target="90">0</span>
+                    <span class="label-estatistica">% Meta de Adoção</span>
+                </div>
+                <div class="estatistica-item">
+                    <span class="numero-estatistica contador" data-target="85">0</span>
+                    <span class="label-estatistica">% Taxa de Conclusão</span>
+                </div>
+                <div class="estatistica-item">
+                    <span class="numero-estatistica contador" data-target="70">0</span>
+                    <span class="label-estatistica">NPS Mínimo</span>
+                </div>
+                <div class="estatistica-item">
+                    <span class="numero-estatistica contador" data-target="12">0</span>
+                    <span class="label-estatistica">Competências Avaliadas</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contato" class="rodape">
+        <div class="container">
+            <div class="conteudo-rodape">
+                <div class="coluna-rodape">
+                    <h4>GPTICS</h4>
+                    <p>Sistema de Acompanhamento de Competências Socioemocionais desenvolvido para transformar a educação superior através da avaliação inteligente.</p>
+                </div>
+                <div class="coluna-rodape">
+                    <h4>Universidade Tiradentes</h4>
+                    <p>Projeto vinculado à UNIT com foco na inovação educacional e desenvolvimento integral dos estudantes do ensino superior.</p>
+                </div>
+                <div class="coluna-rodape">
+                    <h4>Tecnologia</h4>
+                    <p>Desenvolvido com tecnologias modernas, arquitetura escalável e total conformidade com a LGPD para máxima segurança e performance.</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2024 GPTICS - Universidade Tiradentes. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="modalLogin" class="modal-overlay">
+        <div class="modal-login">
+            <div class="modal-header">
+                <div class="logo-modal">GPTICS</div>
+                <button class="botao-fechar" onclick="fecharModalLogin()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <h2 class="titulo-login">Acesso ao Sistema</h2>
+                <p class="subtitulo-login">Escolha seu perfil e entre com suas credenciais</p>
+                
+                <div class="campo-input">
+                    <label for="tipoUsuario">Tipo de Usuário</label>
+                    <select id="tipoUsuario" name="tipoUsuario" style="width: 100%; padding: 0.75rem; border: 1px solid rgba(226, 232, 240, 0.5); border-radius: 5px; margin-bottom: 1rem;">
+                        <option value="aluno">👨‍🎓 Aluno</option>
+                        <option value="professor">👨‍🏫 Professor</option>
+                        <option value="coordenador">👨‍💼 Coordenador</option>
+                    </select>
+                </div>
+                
+                <form class="formulario-login" onsubmit="realizarLogin(event)">
+                    <div class="campo-input">
+                        <label for="matricula">Matrícula ou Código</label>
+                        <input type="text" id="matricula" name="matricula" required placeholder="Digite sua matrícula">
+                        <small style="color: var(--cor-texto-claro); font-size: 0.8rem; display: block; margin-top: 0.25rem;">
+                            💡 Para demonstração: use qualquer matrícula e senha
+                        </small>
+                    </div>
+                    
+                    <div class="campo-input">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" required placeholder="Digite sua senha">
+                    </div>
+                    
+                    <div class="opcoes-login">
+                        <label class="checkbox-container">
+                            <input type="checkbox" id="lembrarMe">
+                            <span class="checkmark"></span>
+                            Lembrar-me
+                        </label>
+                        <a href="#" class="link-esqueci-senha" onclick="abrirRecuperarSenha()">Esqueci minha senha</a>
+                    </div>
+                    
+                    <button type="submit" class="botao-entrar">Entrar no Sistema</button>
+                </form>
+                
+                <div class="lgpd-notice">
+                    <p><small>🔒 Seus dados são protegidos conforme a Lei Geral de Proteção de Dados (LGPD). Ao fazer login, você concorda com nossa política de privacidade.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Recovery Modal -->
+    <div id="modalRecuperarSenha" class="modal-overlay">
+        <div class="modal-login">
+            <div class="modal-header">
+                <div class="logo-modal">GPTICS</div>
+                <button class="botao-fechar" onclick="fecharModalRecuperarSenha()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <h2 class="titulo-login">Recuperar Senha</h2>
+                <p class="subtitulo-login">Digite sua matrícula para receber instruções de recuperação</p>
+                
+                <form class="formulario-login" onsubmit="enviarRecuperacao(event)">
+                    <div class="campo-input">
+                        <label for="matriculaRecuperacao">Matrícula ou Código</label>
+                        <input type="text" id="matriculaRecuperacao" name="matriculaRecuperacao" required placeholder="Digite sua matrícula">
+                    </div>
+                    
+                    <button type="submit" class="botao-entrar">Enviar Instruções</button>
+                </form>
+                
+                <div class="voltar-login">
+                    <a href="#" onclick="voltarParaLogin()">← Voltar para o login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll para navegação
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.cabecalho');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = 'none';
+            }
+        });
+
+        // Animação dos contadores
+        function animateCounters() {
+            const counters = document.querySelectorAll('.contador');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                const duration = 2000; // 2 segundos
+                const step = target / (duration / 16); // 60 FPS
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current);
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target;
+                    }
+                };
+                
+                updateCounter();
+            });
+        }
+
+        // Intersection Observer para contadores
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visivel');
+                    if (entry.target.classList.contains('secao-estatisticas')) {
+                        animateCounters();
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Observar seções para animações
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Animação de entrada dos cartões
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.style.opacity = '1';
+                    }, index * 100);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.cartao-caracteristica, .competencia-item').forEach(card => {
+            cardObserver.observe(card);
+        });
+
+        // Login system functions
+        
+        // Função para abrir modal de login
+        function abrirModalLogin() {
+            document.getElementById('modalLogin').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Função para fechar modal de login
+        function fecharModalLogin() {
+            document.getElementById('modalLogin').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Função para abrir modal de recuperar senha
+        function abrirRecuperarSenha() {
+            document.getElementById('modalLogin').style.display = 'none';
+            document.getElementById('modalRecuperarSenha').style.display = 'flex';
+        }
+
+        // Função para fechar modal de recuperar senha
+        function fecharModalRecuperarSenha() {
+            document.getElementById('modalRecuperarSenha').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Função para voltar do recuperar senha para login
+        function voltarParaLogin() {
+            document.getElementById('modalRecuperarSenha').style.display = 'none';
+            document.getElementById('modalLogin').style.display = 'flex';
+        }
+
+        // Função para realizar login
+        function realizarLogin(event) {
+            event.preventDefault();
+            
+            const matricula = document.getElementById('matricula').value;
+            const senha = document.getElementById('senha').value;
+            const tipoUsuario = document.getElementById('tipoUsuario').value;
+            
+            // Simulação de autenticação - aqui você integraria com seu backend
+            if (matricula && senha) {
+                // Salvar dados do usuário (simulação)
+                localStorage.setItem('usuarioLogado', JSON.stringify({
+                    matricula: matricula,
+                    perfil: tipoUsuario,
+                    nome: `${matricula} - ${tipoUsuario.charAt(0).toUpperCase() + tipoUsuario.slice(1)}`
+                }));
+                
+                // Redirecionar para dashboard baseado no perfil selecionado
+                redirecionarParaDashboard(tipoUsuario);
+            } else {
+                alert('Por favor, preencha todos os campos.');
+            }
+        }
+
+        // Função para enviar recuperação de senha
+        function enviarRecuperacao(event) {
+            event.preventDefault();
+            
+            const matricula = document.getElementById('matriculaRecuperacao').value;
+            
+            if (matricula) {
+                alert('Instruções de recuperação enviadas para o email cadastrado!');
+                fecharModalRecuperarSenha();
+            } else {
+                alert('Por favor, digite sua matrícula.');
+            }
+        }
+
+        // Função para redirecionar para dashboard
+        function redirecionarParaDashboard(perfil) {
+            // Redirecionar para a página específica do perfil
+            switch(perfil) {
+                case 'aluno':
+                    window.location.href = 'dashboard-aluno.html';
+                    break;
+                case 'professor':
+                    window.location.href = 'dashboard-professor.html';
+                    break;
+                case 'coordenador':
+                    window.location.href = 'dashboard-coordenador.html';
+                    break;
+                default:
+                    alert('Perfil não reconhecido');
+            }
+        }
+
+        // Fechar modal ao clicar fora dele
+        window.onclick = function(event) {
+            const modalLogin = document.getElementById('modalLogin');
+            const modalRecuperarSenha = document.getElementById('modalRecuperarSenha');
+            
+            if (event.target === modalLogin) {
+                fecharModalLogin();
+            }
+            if (event.target === modalRecuperarSenha) {
+                fecharModalRecuperarSenha();
+            }
+        }
+    </script>
+</body>
+</html>

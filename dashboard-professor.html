@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Dashboard do Professor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Cards Base */
+        .card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Grid System */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* Notificações */
+        .notification-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .notification-card.urgent {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-color: #ef4444;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-text {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Turmas Grid */
+        .turmas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .turma-card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .turma-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .turma-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .turma-nome {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .turma-codigo {
+            font-size: 0.75rem;
+            color: var(--cor-texto-claro);
+            background: var(--cor-fundo-claro);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .turma-info {
+            margin-bottom: 1rem;
+        }
+
+        .turma-disciplina {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .turma-periodo {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        .turma-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--cor-primaria);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--cor-texto-claro);
+            text-transform: uppercase;
+        }
+
+        .turma-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            flex: 1;
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .action-description {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .turmas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .turma-actions {
+                flex-direction: column;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-role">Professor</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="avaliar-turma.html" class="nav-link">
+                        <span class="nav-icon">👥</span>
+                        Avaliar Turma
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="relatorios-turma.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        Relatórios
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="realizarLogout()">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard do Professor</h1>
+                <p class="page-subtitle">Gerencie suas turmas e acompanhe o desenvolvimento dos alunos</p>
+            </div>
+
+            <!-- Notificações -->
+            <div class="notification-card urgent">
+                <div class="notification-title">⚠️ Prazo de Avaliação</div>
+                <div class="notification-text">Você possui 3 turmas com prazos de avaliação próximos. Prazo final: 20/12/2024.</div>
+            </div>
+
+            <div class="notification-card">
+                <div class="notification-title">📋 Relatórios Disponíveis</div>
+                <div class="notification-text">Novos relatórios de progresso estão disponíveis para suas turmas do semestre 2024.2.</div>
+            </div>
+
+            <!-- Minhas Turmas -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Minhas Turmas - 2024.2</h3>
+                    <p class="card-subtitle">Turmas e componentes curriculares associados</p>
+                </div>
+
+                <div class="turmas-grid">
+                    <!-- Turma 1 -->
+                    <div class="turma-card">
+                        <div class="turma-header">
+                            <div>
+                                <div class="turma-nome">Engenharia de Software</div>
+                                <div class="turma-disciplina">Turma A - Manhã</div>
+                                <div class="turma-periodo">2024.2 - 7º Período</div>
+                            </div>
+                            <div class="turma-codigo">ENG001</div>
+                        </div>
+
+                        <div class="turma-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">32</div>
+                                <div class="stat-label">Alunos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">28</div>
+                                <div class="stat-label">Avaliados</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">4</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                        </div>
+
+                        <div class="turma-actions">
+                            <a href="avaliar-turma.html?turma=ENG001" class="btn btn-primary">
+                                📝 Avaliar
+                            </a>
+                            <a href="relatorios-turma.html?turma=ENG001" class="btn btn-secondary">
+                                📊 Relatórios
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Turma 2 -->
+                    <div class="turma-card">
+                        <div class="turma-header">
+                            <div>
+                                <div class="turma-nome">Gestão de Projetos</div>
+                                <div class="turma-disciplina">Turma B - Noite</div>
+                                <div class="turma-periodo">2024.2 - 6º Período</div>
+                            </div>
+                            <div class="turma-codigo">GPR002</div>
+                        </div>
+
+                        <div class="turma-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">28</div>
+                                <div class="stat-label">Alunos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">25</div>
+                                <div class="stat-label">Avaliados</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">3</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                        </div>
+
+                        <div class="turma-actions">
+                            <a href="avaliar-turma.html?turma=GPR002" class="btn btn-primary">
+                                📝 Avaliar
+                            </a>
+                            <a href="relatorios-turma.html?turma=GPR002" class="btn btn-secondary">
+                                📊 Relatórios
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Turma 3 -->
+                    <div class="turma-card">
+                        <div class="turma-header">
+                            <div>
+                                <div class="turma-nome">Metodologia Ágil</div>
+                                <div class="turma-disciplina">Turma C - Tarde</div>
+                                <div class="turma-periodo">2024.2 - 8º Período</div>
+                            </div>
+                            <div class="turma-codigo">MET003</div>
+                        </div>
+
+                        <div class="turma-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">24</div>
+                                <div class="stat-label">Alunos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">24</div>
+                                <div class="stat-label">Avaliados</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Pendentes</div>
+                            </div>
+                        </div>
+
+                        <div class="turma-actions">
+                            <a href="avaliar-turma.html?turma=MET003" class="btn btn-primary">
+                                📝 Avaliar
+                            </a>
+                            <a href="relatorios-turma.html?turma=MET003" class="btn btn-secondary">
+                                📊 Relatórios
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ações Rápidas -->
+            <div class="quick-actions">
+                <div class="action-card" onclick="window.location.href='avaliar-turma.html'">
+                    <div class="action-icon">👥</div>
+                    <div class="action-title">Avaliar Alunos</div>
+                    <div class="action-description">Acesse o sistema de avaliação por rubricas</div>
+                </div>
+
+                <div class="action-card" onclick="window.location.href='relatorios-turma.html'">
+                    <div class="action-icon">📈</div>
+                    <div class="action-title">Gerar Relatórios</div>
+                    <div class="action-description">Visualize o progresso das turmas</div>
+                </div>
+
+                <div class="action-card" onclick="exportarDados()">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Exportar Dados</div>
+                    <div class="action-description">Baixe relatórios consolidados</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Inicializar dados do usuário
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (userData) {
+                document.getElementById('userName').textContent = userData.nome;
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function exportarDados() {
+            alert('Funcionalidade de exportação será implementada em breve!');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function realizarLogout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

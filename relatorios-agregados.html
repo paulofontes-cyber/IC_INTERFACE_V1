@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios Agregados - GPTICS</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Cards Base */
+        .card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        /* Botões */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        /* Filtros */
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto-escuro);
+            font-weight: 500;
+        }
+
+        .form-select {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Gráficos */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .chart-container {
+            background: var(--cor-branco);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-container h3 {
+            color: var(--cor-texto-escuro);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .chart-container canvas {
+            /* Gráficos com tamanho controlado e responsivos */
+            max-height: 300px !important;
+            width: 100% !important;
+        }
+
+        /* Tabela */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table th {
+            background-color: var(--cor-fundo-claro);
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .data-table tr:hover {
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--cor-fundo-claro);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            color: var(--cor-primaria);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name">Dr. Maria Silva</div>
+                    <div class="user-role">Coordenadora Acadêmica</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="dashboard-coordenador.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="relatorios-agregados.html" class="nav-link active">
+                        <span class="nav-icon">📈</span>
+                        Relatórios Agregados
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="gerenciar-competencias.html" class="nav-link">
+                        <span class="nav-icon">⚙️</span>
+                        Gerenciar Competências
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="window.location.href='index.html'">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Relatórios Agregados</h1>
+                <p class="page-subtitle">Análise consolidada das competências por curso e período</p>
+            </div>
+
+            <!-- Filtros Section -->
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Filtros de Relatório</h2>
+                </div>
+                <div class="filters-grid">
+                    <div class="form-group">
+                        <label for="curso-filter">Curso</label>
+                        <select id="curso-filter" class="form-select">
+                            <option value="">Todos os Cursos</option>
+                            <option value="engenharia">Engenharia</option>
+                            <option value="medicina">Medicina</option>
+                            <option value="direito">Direito</option>
+                            <option value="administracao">Administração</option>
+                            <option value="psicologia">Psicologia</option>
+                            <option value="educacao">Educação</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="periodo-filter">Período</label>
+                        <select id="periodo-filter" class="form-select">
+                            <option value="2024-1">2024.1</option>
+                            <option value="2023-2">2023.2</option>
+                            <option value="2023-1">2023.1</option>
+                            <option value="2022-2">2022.2</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="competencia-filter">Competência</label>
+                        <select id="competencia-filter" class="form-select">
+                            <option value="">Todas as Competências</option>
+                            <option value="autoconhecimento">Autoconhecimento</option>
+                            <option value="autocontrole">Autocontrole</option>
+                            <option value="empatia">Empatia</option>
+                            <option value="comunicacao">Comunicação</option>
+                            <option value="lideranca">Liderança</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="generateReport()">
+                            Gerar Relatório
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Resultados Section -->
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Resultados do Relatório</h2>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" onclick="exportCSV()">
+                            📊 Exportar CSV
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportPDF()">
+                            📄 Exportar PDF
+                        </button>
+                    </div>
+                </div>
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3>Distribuição por Competência</h3>
+                        <canvas id="competencyDistributionChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <h3>Evolução Temporal</h3>
+                        <canvas id="temporalEvolutionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dados Detalhados Section -->
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Dados Detalhados</h2>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Curso</th>
+                                <th>Período</th>
+                                <th>Alunos Avaliados</th>
+                                <th>Média Geral</th>
+                                <th>Autoconhecimento</th>
+                                <th>Autocontrole</th>
+                                <th>Empatia</th>
+                                <th>Comunicação</th>
+                                <th>Liderança</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <tr>
+                                <td>Engenharia</td>
+                                <td>2024.1</td>
+                                <td>342</td>
+                                <td>4.5</td>
+                                <td>4.3</td>
+                                <td>4.6</td>
+                                <td>4.2</td>
+                                <td>4.7</td>
+                                <td>4.4</td>
+                            </tr>
+                            <tr>
+                                <td>Medicina</td>
+                                <td>2024.1</td>
+                                <td>198</td>
+                                <td>4.3</td>
+                                <td>4.5</td>
+                                <td>4.1</td>
+                                <td>4.6</td>
+                                <td>4.2</td>
+                                <td>4.1</td>
+                            </tr>
+                            <tr>
+                                <td>Direito</td>
+                                <td>2024.1</td>
+                                <td>287</td>
+                                <td>4.1</td>
+                                <td>4.0</td>
+                                <td>4.2</td>
+                                <td>4.3</td>
+                                <td>4.4</td>
+                                <td>3.8</td>
+                            </tr>
+                            <tr>
+                                <td>Administração</td>
+                                <td>2024.1</td>
+                                <td>456</td>
+                                <td>4.2</td>
+                                <td>4.1</td>
+                                <td>4.0</td>
+                                <td>4.2</td>
+                                <td>4.5</td>
+                                <td>4.3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Estatísticas Section -->
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Estatísticas Resumo</h2>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total de Alunos Avaliados</div>
+                        <div class="stat-value">1,283</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Média Geral Institucional</div>
+                        <div class="stat-value">4.28</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Competência com Maior Média</div>
+                        <div class="stat-value">Comunicação (4.45)</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Competência com Menor Média</div>
+                        <div class="stat-value">Liderança (4.15)</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Competency Distribution Chart - Tamanho controlado
+        const competencyCtx = document.getElementById('competencyDistributionChart').getContext('2d');
+        new Chart(competencyCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Autoconhecimento', 'Autocontrole', 'Empatia', 'Comunicação', 'Liderança'],
+                datasets: [{
+                    label: 'Média Institucional',
+                    data: [4.2, 4.1, 4.3, 4.5, 4.0],
+                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(59, 130, 246, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+
+        // Temporal Evolution Chart - Tamanho controlado
+        const temporalCtx = document.getElementById('temporalEvolutionChart').getContext('2d');
+        new Chart(temporalCtx, {
+            type: 'line',
+            data: {
+                labels: ['2022.2', '2023.1', '2023.2', '2024.1'],
+                datasets: [{
+                    label: 'Média Geral',
+                    data: [3.8, 4.0, 4.1, 4.28],
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5,
+                        ticks: {
+                            stepSize: 0.5
+                        }
+                    }
+                }
+            }
+        });
+
+        function generateReport() {
+            alert('Relatório gerado com base nos filtros selecionados!');
+        }
+
+        function exportCSV() {
+            alert('Exportando dados em formato CSV...');
+        }
+
+        function exportPDF() {
+            alert('Exportando relatório em formato PDF...');
+        }
+    </script>
+</body>
+</html>

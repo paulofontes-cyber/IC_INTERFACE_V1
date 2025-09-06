@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Competências - GPTICS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Cards Base */
+        .card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        /* Botões */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: var(--cor-branco);
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        /* Grid de Competências */
+        .competencies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .competency-card {
+            background: var(--cor-branco);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            transition: all 0.2s ease;
+        }
+
+        .competency-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .competency-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .competency-header h3 {
+            color: var(--cor-texto-escuro);
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .competency-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .competency-description {
+            color: var(--cor-texto-claro);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .competency-rubrics h4 {
+            color: var(--cor-texto-escuro);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .competency-rubrics ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .competency-rubrics li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            color: var(--cor-texto-claro);
+        }
+
+        .competency-rubrics li:last-child {
+            border-bottom: none;
+        }
+
+        .competency-rubrics strong {
+            color: var(--cor-primaria);
+            font-weight: 600;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: var(--cor-branco);
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            box-shadow: var(--sombra-forte);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .modal-header h2 {
+            color: var(--cor-texto-escuro);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close {
+            color: var(--cor-texto-claro);
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: var(--cor-texto-escuro);
+        }
+
+        .modal form {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto-escuro);
+            font-weight: 500;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--cor-primaria);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .rubrics-container {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .rubric-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .rubric-item label {
+            min-width: 80px;
+            margin-bottom: 0;
+            font-size: 0.875rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            background-color: var(--cor-fundo-claro);
+            border-radius: 0 0 12px 12px;
+            flex-shrink: 0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .competencies-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name">Dr. Maria Silva</div>
+                    <div class="user-role">Coordenadora Acadêmica</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="dashboard-coordenador.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="relatorios-agregados.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        Relatórios Agregados
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="gerenciar-competencias.html" class="nav-link active">
+                        <span class="nav-icon">⚙️</span>
+                        Gerenciar Competências
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="window.location.href='index.html'">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Gerenciar Competências</h1>
+                <p class="page-subtitle">Administre as competências do sistema de avaliação</p>
+            </div>
+
+            <!-- Actions Section -->
+            <section class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Competências Cadastradas</h2>
+                    <button class="btn btn-primary" onclick="openAddCompetencyModal()">
+                        ➕ Adicionar Competência
+                    </button>
+                </div>
+                
+                <!-- Competencies List -->
+                <div class="competencies-grid">
+                    <div class="competency-card">
+                        <div class="competency-header">
+                            <h3>Autoconhecimento</h3>
+                            <div class="competency-actions">
+                                <button class="btn btn-sm" onclick="editCompetency('autoconhecimento')">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCompetency('autoconhecimento')">🗑️</button>
+                            </div>
+                        </div>
+                        <p class="competency-description">
+                            Capacidade de reconhecer e compreender as próprias emoções, valores, forças e limitações.
+                        </p>
+                        <div class="competency-rubrics">
+                            <h4>Rubricas de Avaliação:</h4>
+                            <ul>
+                                <li><strong>1:</strong> Não demonstra autoconhecimento</li>
+                                <li><strong>2:</strong> Demonstra pouco autoconhecimento</li>
+                                <li><strong>3:</strong> Demonstra autoconhecimento moderado</li>
+                                <li><strong>4:</strong> Demonstra bom autoconhecimento</li>
+                                <li><strong>5:</strong> Demonstra excelente autoconhecimento</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="competency-card">
+                        <div class="competency-header">
+                            <h3>Autocontrole</h3>
+                            <div class="competency-actions">
+                                <button class="btn btn-sm" onclick="editCompetency('autocontrole')">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCompetency('autocontrole')">🗑️</button>
+                            </div>
+                        </div>
+                        <p class="competency-description">
+                            Habilidade de gerenciar as próprias emoções e comportamentos de forma eficaz.
+                        </p>
+                        <div class="competency-rubrics">
+                            <h4>Rubricas de Avaliação:</h4>
+                            <ul>
+                                <li><strong>1:</strong> Não demonstra autocontrole</li>
+                                <li><strong>2:</strong> Demonstra pouco autocontrole</li>
+                                <li><strong>3:</strong> Demonstra autocontrole moderado</li>
+                                <li><strong>4:</strong> Demonstra bom autocontrole</li>
+                                <li><strong>5:</strong> Demonstra excelente autocontrole</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="competency-card">
+                        <div class="competency-header">
+                            <h3>Empatia</h3>
+                            <div class="competency-actions">
+                                <button class="btn btn-sm" onclick="editCompetency('empatia')">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCompetency('empatia')">🗑️</button>
+                            </div>
+                        </div>
+                        <p class="competency-description">
+                            Capacidade de compreender e compartilhar os sentimentos dos outros.
+                        </p>
+                        <div class="competency-rubrics">
+                            <h4>Rubricas de Avaliação:</h4>
+                            <ul>
+                                <li><strong>1:</strong> Não demonstra empatia</li>
+                                <li><strong>2:</strong> Demonstra pouca empatia</li>
+                                <li><strong>3:</strong> Demonstra empatia moderada</li>
+                                <li><strong>4:</strong> Demonstra boa empatia</li>
+                                <li><strong>5:</strong> Demonstra excelente empatia</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="competency-card">
+                        <div class="competency-header">
+                            <h3>Comunicação</h3>
+                            <div class="competency-actions">
+                                <button class="btn btn-sm" onclick="editCompetency('comunicacao')">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCompetency('comunicacao')">🗑️</button>
+                            </div>
+                        </div>
+                        <p class="competency-description">
+                            Habilidade de expressar ideias de forma clara e eficaz, tanto verbalmente quanto por escrito.
+                        </p>
+                        <div class="competency-rubrics">
+                            <h4>Rubricas de Avaliação:</h4>
+                            <ul>
+                                <li><strong>1:</strong> Comunicação muito deficiente</li>
+                                <li><strong>2:</strong> Comunicação deficiente</li>
+                                <li><strong>3:</strong> Comunicação adequada</li>
+                                <li><strong>4:</strong> Boa comunicação</li>
+                                <li><strong>5:</strong> Excelente comunicação</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="competency-card">
+                        <div class="competency-header">
+                            <h3>Liderança</h3>
+                            <div class="competency-actions">
+                                <button class="btn btn-sm" onclick="editCompetency('lideranca')">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCompetency('lideranca')">🗑️</button>
+                            </div>
+                        </div>
+                        <p class="competency-description">
+                            Capacidade de influenciar, motivar e guiar outros em direção a objetivos comuns.
+                        </p>
+                        <div class="competency-rubrics">
+                            <h4>Rubricas de Avaliação:</h4>
+                            <ul>
+                                <li><strong>1:</strong> Não demonstra liderança</li>
+                                <li><strong>2:</strong> Demonstra pouca liderança</li>
+                                <li><strong>3:</strong> Demonstra liderança moderada</li>
+                                <li><strong>4:</strong> Demonstra boa liderança</li>
+                                <li><strong>5:</strong> Demonstra excelente liderança</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="competency-card">
+                        <div class="competency-header">
+                            <h3>Criatividade</h3>
+                            <div class="competency-actions">
+                                <button class="btn btn-sm" onclick="editCompetency('criatividade')">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="deleteCompetency('criatividade')">🗑️</button>
+                            </div>
+                        </div>
+                        <p class="competency-description">
+                            Habilidade de gerar ideias originais e encontrar soluções inovadoras para problemas.
+                        </p>
+                        <div class="competency-rubrics">
+                            <h4>Rubricas de Avaliação:</h4>
+                            <ul>
+                                <li><strong>1:</strong> Não demonstra criatividade</li>
+                                <li><strong>2:</strong> Demonstra pouca criatividade</li>
+                                <li><strong>3:</strong> Demonstra criatividade moderada</li>
+                                <li><strong>4:</strong> Demonstra boa criatividade</li>
+                                <li><strong>5:</strong> Demonstra excelente criatividade</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Competency Modal -->
+    <div id="competencyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Adicionar Nova Competência</h2>
+                <span class="close" onclick="closeCompetencyModal()">&times;</span>
+            </div>
+            <form id="competencyForm">
+                <div class="form-group">
+                    <label for="competencyName">Nome da Competência</label>
+                    <input type="text" id="competencyName" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="competencyDescription">Descrição</label>
+                    <textarea id="competencyDescription" class="form-textarea" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Rubricas de Avaliação</label>
+                    <div class="rubrics-container">
+                        <div class="rubric-item">
+                            <label for="rubric1">Nível 1:</label>
+                            <input type="text" id="rubric1" class="form-input" placeholder="Descrição para nível 1">
+                        </div>
+                        <div class="rubric-item">
+                            <label for="rubric2">Nível 2:</label>
+                            <input type="text" id="rubric2" class="form-input" placeholder="Descrição para nível 2">
+                        </div>
+                        <div class="rubric-item">
+                            <label for="rubric3">Nível 3:</label>
+                            <input type="text" id="rubric3" class="form-input" placeholder="Descrição para nível 3">
+                        </div>
+                        <div class="rubric-item">
+                            <label for="rubric4">Nível 4:</label>
+                            <input type="text" id="rubric4" class="form-input" placeholder="Descrição para nível 4">
+                        </div>
+                        <div class="rubric-item">
+                            <label for="rubric5">Nível 5:</label>
+                            <input type="text" id="rubric5" class="form-input" placeholder="Descrição para nível 5">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeCompetencyModal()">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Salvar Competência
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function openAddCompetencyModal() {
+            document.getElementById('modalTitle').textContent = 'Adicionar Nova Competência';
+            document.getElementById('competencyForm').reset();
+            document.getElementById('competencyModal').style.display = 'block';
+        }
+
+        function editCompetency(competencyId) {
+            document.getElementById('modalTitle').textContent = 'Editar Competência';
+            document.getElementById('competencyModal').style.display = 'block';
+        }
+
+        function deleteCompetency(competencyId) {
+            if (confirm('Tem certeza que deseja excluir esta competência?')) {
+                alert('Competência excluída com sucesso!');
+            }
+        }
+
+        function closeCompetencyModal() {
+            document.getElementById('competencyModal').style.display = 'none';
+        }
+
+        document.getElementById('competencyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Competência salva com sucesso!');
+            closeCompetencyModal();
+        });
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('competencyModal');
+            if (event.target == modal) {
+                closeCompetencyModal();
+            }
+        }
+    </script>
+</body>
+</html>

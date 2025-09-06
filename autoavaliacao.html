@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Autoavaliação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Formulário de Autoavaliação */
+        .avaliacao-form {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+        }
+
+        .competencia-item {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: var(--cor-fundo-claro);
+        }
+
+        .competencia-titulo {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .competencia-descricao {
+            color: var(--cor-texto-claro);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .escala-avaliacao {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .escala-label {
+            font-weight: 500;
+            color: var(--cor-texto-escuro);
+            min-width: 120px;
+        }
+
+        .escala-opcoes {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .escala-opcao {
+            position: relative;
+        }
+
+        .escala-opcao input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+        }
+
+        .escala-opcao label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            color: var(--cor-texto-claro);
+        }
+
+        .escala-opcao input[type="radio"]:checked + label {
+            background: var(--gradiente-hero);
+            border-color: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        .escala-legenda {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--cor-texto-claro);
+            margin-top: 0.5rem;
+        }
+
+        /* Botões de Ação */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradiente-hero);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+
+            .escala-avaliacao {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-role">Aluno</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="dashboard-aluno.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <span class="nav-icon">📝</span>
+                        Autoavaliação
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="historico-avaliacoes.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        Histórico
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="realizarLogout()">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Autoavaliação de Competências</h1>
+                <p class="page-subtitle">Avalie seu desenvolvimento nas 12 competências socioemocionais</p>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">0 de 12 competências avaliadas</div>
+            </div>
+
+            <!-- Formulário -->
+            <form class="avaliacao-form" id="avaliacaoForm">
+                <!-- Autoconhecimento -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">1. Autoconhecimento</div>
+                    <div class="competencia-descricao">
+                        Capacidade de reconhecer e compreender suas próprias emoções, valores, forças e limitações.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="autoconhecimento" value="1" id="auto1">
+                                <label for="auto1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autoconhecimento" value="2" id="auto2">
+                                <label for="auto2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autoconhecimento" value="3" id="auto3">
+                                <label for="auto3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autoconhecimento" value="4" id="auto4">
+                                <label for="auto4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autoconhecimento" value="5" id="auto5">
+                                <label for="auto5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Autorregulação -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">2. Autorregulação</div>
+                    <div class="competencia-descricao">
+                        Habilidade de gerenciar suas emoções, impulsos e comportamentos de forma eficaz.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="autorregulacao" value="1" id="autor1">
+                                <label for="autor1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autorregulacao" value="2" id="autor2">
+                                <label for="autor2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autorregulacao" value="3" id="autor3">
+                                <label for="autor3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autorregulacao" value="4" id="autor4">
+                                <label for="autor4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="autorregulacao" value="5" id="autor5">
+                                <label for="autor5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Resiliência -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">3. Resiliência</div>
+                    <div class="competencia-descricao">
+                        Capacidade de se adaptar e se recuperar diante de adversidades, desafios e mudanças.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="resiliencia" value="1" id="res1">
+                                <label for="res1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="resiliencia" value="2" id="res2">
+                                <label for="res2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="resiliencia" value="3" id="res3">
+                                <label for="res3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="resiliencia" value="4" id="res4">
+                                <label for="res4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="resiliencia" value="5" id="res5">
+                                <label for="res5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Empatia -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">4. Empatia</div>
+                    <div class="competencia-descricao">
+                        Habilidade de compreender e compartilhar os sentimentos e perspectivas dos outros.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="empatia" value="1" id="emp1">
+                                <label for="emp1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="empatia" value="2" id="emp2">
+                                <label for="emp2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="empatia" value="3" id="emp3">
+                                <label for="emp3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="empatia" value="4" id="emp4">
+                                <label for="emp4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="empatia" value="5" id="emp5">
+                                <label for="emp5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Comunicação Eficaz -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">5. Comunicação Eficaz</div>
+                    <div class="competencia-descricao">
+                        Capacidade de expressar ideias de forma clara e ouvir ativamente os outros.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="comunicacao" value="1" id="com1">
+                                <label for="com1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="comunicacao" value="2" id="com2">
+                                <label for="com2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="comunicacao" value="3" id="com3">
+                                <label for="com3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="comunicacao" value="4" id="com4">
+                                <label for="com4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="comunicacao" value="5" id="com5">
+                                <label for="com5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Resolução de Conflitos -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">6. Resolução de Conflitos</div>
+                    <div class="competencia-descricao">
+                        Habilidade de identificar, analisar e resolver conflitos de forma construtiva.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="conflitos" value="1" id="conf1">
+                                <label for="conf1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="conflitos" value="2" id="conf2">
+                                <label for="conf2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="conflitos" value="3" id="conf3">
+                                <label for="conf3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="conflitos" value="4" id="conf4">
+                                <label for="conf4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="conflitos" value="5" id="conf5">
+                                <label for="conf5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Pensamento Crítico -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">7. Pensamento Crítico</div>
+                    <div class="competencia-descricao">
+                        Capacidade de analisar informações de forma objetiva e tomar decisões fundamentadas.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="pensamento" value="1" id="pen1">
+                                <label for="pen1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="pensamento" value="2" id="pen2">
+                                <label for="pen2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="pensamento" value="3" id="pen3">
+                                <label for="pen3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="pensamento" value="4" id="pen4">
+                                <label for="pen4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="pensamento" value="5" id="pen5">
+                                <label for="pen5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Criatividade -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">8. Criatividade</div>
+                    <div class="competencia-descricao">
+                        Habilidade de gerar ideias originais e encontrar soluções inovadoras para problemas.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="criatividade" value="1" id="cri1">
+                                <label for="cri1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="criatividade" value="2" id="cri2">
+                                <label for="cri2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="criatividade" value="3" id="cri3">
+                                <label for="cri3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="criatividade" value="4" id="cri4">
+                                <label for="cri4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="criatividade" value="5" id="cri5">
+                                <label for="cri5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Tomada de Decisão -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">9. Tomada de Decisão</div>
+                    <div class="competencia-descricao">
+                        Capacidade de avaliar alternativas e escolher o melhor curso de ação.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="decisao" value="1" id="dec1">
+                                <label for="dec1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="decisao" value="2" id="dec2">
+                                <label for="dec2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="decisao" value="3" id="dec3">
+                                <label for="dec3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="decisao" value="4" id="dec4">
+                                <label for="dec4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="decisao" value="5" id="dec5">
+                                <label for="dec5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Colaboração -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">10. Colaboração</div>
+                    <div class="competencia-descricao">
+                        Habilidade de trabalhar efetivamente em equipe e contribuir para objetivos comuns.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="colaboracao" value="1" id="col1">
+                                <label for="col1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="colaboracao" value="2" id="col2">
+                                <label for="col2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="colaboracao" value="3" id="col3">
+                                <label for="col3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="colaboracao" value="4" id="col4">
+                                <label for="col4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="colaboracao" value="5" id="col5">
+                                <label for="col5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Adaptabilidade -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">11. Adaptabilidade</div>
+                    <div class="competencia-descricao">
+                        Capacidade de se ajustar a novas situações e mudanças no ambiente.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="adaptabilidade" value="1" id="ada1">
+                                <label for="ada1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="adaptabilidade" value="2" id="ada2">
+                                <label for="ada2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="adaptabilidade" value="3" id="ada3">
+                                <label for="ada3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="adaptabilidade" value="4" id="ada4">
+                                <label for="ada4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="adaptabilidade" value="5" id="ada5">
+                                <label for="ada5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Gestão do Tempo -->
+                <div class="competencia-item">
+                    <div class="competencia-titulo">12. Gestão do Tempo</div>
+                    <div class="competencia-descricao">
+                        Habilidade de organizar e priorizar tarefas para usar o tempo de forma eficiente.
+                    </div>
+                    <div class="escala-avaliacao">
+                        <div class="escala-label">Sua avaliação:</div>
+                        <div class="escala-opcoes">
+                            <div class="escala-opcao">
+                                <input type="radio" name="tempo" value="1" id="tem1">
+                                <label for="tem1">1</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="tempo" value="2" id="tem2">
+                                <label for="tem2">2</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="tempo" value="3" id="tem3">
+                                <label for="tem3">3</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="tempo" value="4" id="tem4">
+                                <label for="tem4">4</label>
+                            </div>
+                            <div class="escala-opcao">
+                                <input type="radio" name="tempo" value="5" id="tem5">
+                                <label for="tem5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="escala-legenda">
+                        <span>Preciso desenvolver muito</span>
+                        <span>Domino completamente</span>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação -->
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="salvarRascunho()">
+                        💾 Salvar Rascunho
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        📤 Enviar Avaliação
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        // Inicializar dados do usuário
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (userData) {
+                document.getElementById('userName').textContent = userData.nome;
+            } else {
+                window.location.href = 'index.html';
+            }
+
+            // Carregar rascunho se existir
+            carregarRascunho();
+            
+            // Adicionar listeners para atualizar progresso
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', atualizarProgresso);
+            });
+        });
+
+        function atualizarProgresso() {
+            const competencias = [
+                'autoconhecimento', 'autorregulacao', 'resiliencia', 'empatia',
+                'comunicacao', 'conflitos', 'pensamento', 'criatividade',
+                'decisao', 'colaboracao', 'adaptabilidade', 'tempo'
+            ];
+
+            let avaliadasCount = 0;
+            competencias.forEach(comp => {
+                const selected = document.querySelector(`input[name="${comp}"]:checked`);
+                if (selected) avaliadasCount++;
+            });
+
+            const percentage = (avaliadasCount / competencias.length) * 100;
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = 
+                `${avaliadasCount} de ${competencias.length} competências avaliadas`;
+        }
+
+        function salvarRascunho() {
+            const formData = new FormData(document.getElementById('avaliacaoForm'));
+            const rascunho = {};
+            
+            for (let [key, value] of formData.entries()) {
+                rascunho[key] = value;
+            }
+
+            localStorage.setItem('rascunhoAutoavaliacao', JSON.stringify(rascunho));
+            alert('Rascunho salvo com sucesso!');
+        }
+
+        function carregarRascunho() {
+            const rascunho = localStorage.getItem('rascunhoAutoavaliacao');
+            if (rascunho) {
+                const dados = JSON.parse(rascunho);
+                
+                Object.keys(dados).forEach(competencia => {
+                    const radio = document.querySelector(`input[name="${competencia}"][value="${dados[competencia]}"]`);
+                    if (radio) {
+                        radio.checked = true;
+                    }
+                });
+                
+                atualizarProgresso();
+            }
+        }
+
+        // Submissão do formulário
+        document.getElementById('avaliacaoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const avaliacao = {};
+            
+            for (let [key, value] of formData.entries()) {
+                avaliacao[key] = parseInt(value);
+            }
+
+            // Verificar se todas as competências foram avaliadas
+            const competencias = [
+                'autoconhecimento', 'autorregulacao', 'resiliencia', 'empatia',
+                'comunicacao', 'conflitos', 'pensamento', 'criatividade',
+                'decisao', 'colaboracao', 'adaptabilidade', 'tempo'
+            ];
+
+            const faltantes = competencias.filter(comp => !avaliacao[comp]);
+            
+            if (faltantes.length > 0) {
+                alert(`Por favor, avalie todas as competências. Faltam: ${faltantes.length} competência(s).`);
+                return;
+            }
+
+            // Salvar avaliação
+            const avaliacoes = JSON.parse(localStorage.getItem('avaliacoes') || '[]');
+            avaliacoes.push({
+                data: new Date().toISOString(),
+                competencias: avaliacao,
+                tipo: 'autoavaliacao'
+            });
+            
+            localStorage.setItem('avaliacoes', JSON.stringify(avaliacoes));
+            localStorage.removeItem('rascunhoAutoavaliacao');
+            
+            alert('Avaliação enviada com sucesso!');
+            window.location.href = 'dashboard-aluno.html';
+        });
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function realizarLogout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>

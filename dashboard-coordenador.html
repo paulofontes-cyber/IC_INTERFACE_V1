@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Estratégico - GPTICS</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cor-primaria: #2563eb;
+            --cor-secundaria: #1e40af;
+            --cor-acento: #3b82f6;
+            --cor-sucesso: #10b981;
+            --cor-fundo-escuro: #0f172a;
+            --cor-fundo-claro: #f8fafc;
+            --cor-texto-escuro: #1e293b;
+            --cor-texto-claro: #64748b;
+            --cor-branco: #ffffff;
+            --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+            --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--cor-texto-escuro);
+            background-color: var(--cor-fundo-claro);
+        }
+
+        /* Layout Principal */
+        .layout-dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--cor-branco);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: var(--sombra-suave);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .logo-sidebar {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+        }
+
+        .user-role {
+            font-size: 0.875rem;
+            color: var(--cor-texto-claro);
+            text-transform: capitalize;
+        }
+
+        /* Menu de Navegação */
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.25rem 1rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--cor-texto-claro);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--cor-fundo-claro);
+            color: var(--cor-primaria);
+        }
+
+        .nav-link.active {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .nav-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        /* Botão de Logout */
+        .logout-section {
+            position: absolute;
+            bottom: 2rem;
+            left: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 1px solid #e2e8f0;
+            color: var(--cor-texto-claro);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 1.125rem;
+        }
+
+        /* Cards Base */
+        .card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-subtitle {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Grid System */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        /* Botões */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: var(--gradiente-hero);
+            color: var(--cor-branco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--sombra-media);
+        }
+
+        .btn-secondary {
+            background: var(--cor-branco);
+            color: var(--cor-primaria);
+            border: 1px solid var(--cor-primaria);
+        }
+
+        .btn-secondary:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+
+        /* KPIs específicos */
+        .kpis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .kpi-icon {
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--cor-texto-escuro);
+        }
+
+        .kpi-change {
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .kpi-change.positive {
+            color: var(--cor-sucesso);
+        }
+
+        .kpi-change.neutral {
+            color: var(--cor-texto-claro);
+        }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+        }
+
+        .chart-card h3 {
+            margin-bottom: 1rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        /* Management Cards */
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .management-card {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .management-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .management-card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .management-card p {
+            color: var(--cor-texto-claro);
+            margin-bottom: 1rem;
+        }
+
+        /* Reports */
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .report-item {
+            background: var(--cor-branco);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--sombra-suave);
+            border: 1px solid #e2e8f0;
+        }
+
+        .report-item h4 {
+            margin-bottom: 0.5rem;
+            color: var(--cor-texto-escuro);
+        }
+
+        .report-item p {
+            color: var(--cor-texto-claro);
+            margin-bottom: 1rem;
+        }
+
+        /* Section Headers */
+        .dashboard-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .dashboard-content h2:first-child {
+            margin-top: 0;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+                background: var(--cor-primaria);
+                color: var(--cor-branco);
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-sidebar">GPTICS</div>
+            <div class="user-info">
+                <div class="user-name">Dr. Maria Silva</div>
+                <div class="user-role">Coordenadora Acadêmica</div>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="dashboard-coordenador.html" class="nav-link active">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="relatorios-agregados.html" class="nav-link">
+                    <span class="nav-icon">📈</span>
+                    Relatórios Agregados
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="gerenciar-competencias.html" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    Gerenciar Competências
+                </a>
+            </div>
+        </nav>
+
+        <div class="logout-section">
+            <button class="logout-btn" onclick="window.location.href='index.html'">
+                🚪 Sair do Sistema
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard Estratégico</h1>
+            <p class="page-subtitle">Visão geral e indicadores do sistema</p>
+        </div>
+
+        <div class="dashboard-content">
+            <!-- KPIs Section -->
+            <section class="kpis-section">
+                <h2>Indicadores Principais</h2>
+                <div class="kpis-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon">👥</div>
+                        <div class="kpi-content">
+                            <h3>Total de Alunos</h3>
+                            <div class="kpi-value">2,847</div>
+                            <div class="kpi-change positive">+5.2% vs mês anterior</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon">📚</div>
+                        <div class="kpi-content">
+                            <h3>Cursos Ativos</h3>
+                            <div class="kpi-value">24</div>
+                            <div class="kpi-change neutral">Sem alteração</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon">✅</div>
+                        <div class="kpi-content">
+                            <h3>Taxa de Avaliação</h3>
+                            <div class="kpi-value">87.3%</div>
+                            <div class="kpi-change positive">+2.1% vs mês anterior</div>
+                        </div>
+                    </div>
+                    
+                    <div class="kpi-card">
+                        <div class="kpi-icon">📊</div>
+                        <div class="kpi-content">
+                            <h3>Média Geral</h3>
+                            <div class="kpi-value">4.2</div>
+                            <div class="kpi-change positive">+0.3 vs semestre anterior</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Desempenho por Curso</h3>
+                        <canvas id="coursePerformanceChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3>Engajamento Mensal</h3>
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Management Tools -->
+            <section class="management-section">
+                <h2>Ferramentas de Gestão</h2>
+                <div class="management-grid">
+                    <div class="management-card">
+                        <div class="management-icon">👨‍🏫</div>
+                        <h3>Gestão de Professores</h3>
+                        <p>Gerenciar professores, turmas e permissões</p>
+                        <button class="btn-primary" onclick="alert('Funcionalidade em desenvolvimento')">
+                            Acessar
+                        </button>
+                    </div>
+                    
+                    <div class="management-card">
+                        <div class="management-icon">👨‍🎓</div>
+                        <h3>Gestão de Alunos</h3>
+                        <p>Visualizar e gerenciar dados dos alunos</p>
+                        <button class="btn-primary" onclick="alert('Funcionalidade em desenvolvimento')">
+                            Acessar
+                        </button>
+                    </div>
+                    
+                    <div class="management-card">
+                        <div class="management-icon">📋</div>
+                        <h3>Configurações do Sistema</h3>
+                        <p>Configurar parâmetros e preferências</p>
+                        <button class="btn-primary" onclick="alert('Funcionalidade em desenvolvimento')">
+                            Acessar
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Reports -->
+            <section class="reports-section">
+                <h2>Relatórios Rápidos</h2>
+                <div class="reports-grid">
+                    <div class="report-item">
+                        <h4>Relatório Mensal de Competências</h4>
+                        <p>Análise consolidada do desenvolvimento de competências</p>
+                        <a href="relatorios-agregados.html" class="btn-secondary">Gerar Relatório</a>
+                    </div>
+                    
+                    <div class="report-item">
+                        <h4>Relatório de Engajamento</h4>
+                        <p>Métricas de participação de alunos e professores</p>
+                        <a href="relatorios-agregados.html" class="btn-secondary">Gerar Relatório</a>
+                    </div>
+                    
+                    <div class="report-item">
+                        <h4>Relatório Comparativo de Cursos</h4>
+                        <p>Comparação de desempenho entre diferentes cursos</p>
+                        <a href="relatorios-agregados.html" class="btn-secondary">Gerar Relatório</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Funções globais
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // Course Performance Chart
+        const courseCtx = document.getElementById('coursePerformanceChart').getContext('2d');
+        new Chart(courseCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Engenharia', 'Medicina', 'Direito', 'Administração', 'Psicologia', 'Educação'],
+                datasets: [{
+                    label: 'Média de Competências',
+                    data: [4.5, 4.3, 4.1, 4.2, 4.6, 4.4],
+                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 5
+                    }
+                }
+            }
+        });
+
+        // Engagement Chart
+        const engagementCtx = document.getElementById('engagementChart').getContext('2d');
+        new Chart(engagementCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Alunos Ativos',
+                    data: [2400, 2500, 2300, 2600, 2700, 2847],
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    tension: 0.4
+                }, {
+                    label: 'Professores Ativos',
+                    data: [120, 125, 118, 130, 135, 142],
+                    borderColor: 'rgba(245, 158, 11, 1)',
+                    backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+/* Criando arquivo CSS base que estava sendo referenciado incorretamente no dashboard-aluno.html */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --cor-primaria: #2563eb;
+  --cor-secundaria: #1e40af;
+  --cor-acento: #3b82f6;
+  --cor-sucesso: #10b981;
+  --cor-fundo-escuro: #0f172a;
+  --cor-fundo-claro: #f8fafc;
+  --cor-texto-escuro: #1e293b;
+  --cor-texto-claro: #64748b;
+  --cor-branco: #ffffff;
+  --gradiente-principal: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradiente-hero: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  --sombra-suave: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --sombra-media: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --sombra-forte: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  color: var(--cor-texto-escuro);
+  background-color: var(--cor-fundo-claro);
+}
+
+/* Layout Principal */
+.layout-dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: var(--cor-branco);
+  border-right: 1px solid #e2e8f0;
+  box-shadow: var(--sombra-suave);
+  position: fixed;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.sidebar-header {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.logo-sidebar {
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: var(--gradiente-hero);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.user-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--cor-fundo-claro);
+  border-radius: 8px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--cor-texto-escuro);
+}
+
+.user-role {
+  font-size: 0.875rem;
+  color: var(--cor-texto-claro);
+  text-transform: capitalize;
+}
+
+/* Menu de Navegação */
+.nav-menu {
+  padding: 1rem 0;
+}
+
+.nav-item {
+  margin: 0.25rem 1rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--cor-texto-claro);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  background-color: var(--cor-fundo-claro);
+  color: var(--cor-primaria);
+}
+
+.nav-link.active {
+  background: var(--gradiente-hero);
+  color: var(--cor-branco);
+}
+
+.nav-icon {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+}
+
+/* Botão de Logout */
+.logout-section {
+  position: absolute;
+  bottom: 2rem;
+  left: 1.5rem;
+  right: 1.5rem;
+}
+
+.logout-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: var(--cor-texto-claro);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+/* Conteúdo Principal */
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  padding: 2rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cor-texto-escuro);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  color: var(--cor-texto-claro);
+  font-size: 1.125rem;
+}
+
+/* Cards Base */
+.card {
+  background: var(--cor-branco);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--sombra-suave);
+  border: 1px solid #e2e8f0;
+}
+
+.card-header {
+  margin-bottom: 1.5rem;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--cor-texto-escuro);
+  margin-bottom: 0.5rem;
+}
+
+.card-subtitle {
+  color: var(--cor-texto-claro);
+  font-size: 0.875rem;
+}
+
+/* Grid System */
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1rem;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1001;
+    background: var(--cor-primaria);
+    color: var(--cor-branco);
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+}
+
+.mobile-menu-btn {
+  display: none;
+}

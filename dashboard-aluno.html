@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPTICS - Dashboard do Aluno</title>
+    <!-- Corrigindo referência do CSS base -->
+    <link rel="stylesheet" href="dashboard-base.css">
+    <style>
+        /* Estilos específicos para dashboard do aluno */
+        
+        /* Gráfico de Radar */
+        .radar-chart {
+            width: 100%;
+            height: 300px;
+            background: var(--cor-fundo-claro);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cor-texto-claro);
+            font-weight: 600;
+        }
+
+        /* Cards de Notificação */
+        .notification-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .notification-card.pending {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-color: #ef4444;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--cor-texto-escuro);
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-text {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+        }
+
+        /* Progress Cards */
+        .progress-card {
+            text-align: center;
+        }
+
+        .progress-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--gradiente-hero);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-label {
+            color: var(--cor-texto-claro);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 1rem;
+            background: var(--cor-branco);
+            border: 2px solid var(--cor-primaria);
+            color: var(--cor-primaria);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .action-btn:hover {
+            background: var(--cor-primaria);
+            color: var(--cor-branco);
+        }
+    </style>
+</head>
+<body>
+    <div class="layout-dashboard">
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-sidebar">GPTICS</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">Carregando...</div>
+                    <div class="user-role" id="userRole">Aluno</div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="#" class="nav-link active" onclick="loadDashboard()">
+                        <span class="nav-icon">📊</span>
+                        Dashboard
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="autoavaliacao.html" class="nav-link">
+                        <span class="nav-icon">📝</span>
+                        Autoavaliação
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="historico-avaliacoes.html" class="nav-link">
+                        <span class="nav-icon">📈</span>
+                        Histórico
+                    </a>
+                </div>
+            </nav>
+
+            <div class="logout-section">
+                <button class="logout-btn" onclick="realizarLogout()">
+                    🚪 Sair do Sistema
+                </button>
+            </div>
+        </aside>
+
+        <!-- Conteúdo Principal -->
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard do Aluno</h1>
+                <p class="page-subtitle">Acompanhe seu desenvolvimento em competências socioemocionais</p>
+            </div>
+
+            <!-- Notificações -->
+            <div class="notification-card pending">
+                <div class="notification-title">⚠️ Autoavaliação Pendente</div>
+                <div class="notification-text">Você possui uma autoavaliação pendente para este semestre. Complete até 15/12/2024.</div>
+            </div>
+
+            <!-- Grid Principal -->
+            <div class="grid grid-3">
+                <!-- Progresso Geral -->
+                <div class="card progress-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Progresso Geral</h3>
+                    </div>
+                    <div class="progress-number">78%</div>
+                    <div class="progress-label">Competências Desenvolvidas</div>
+                </div>
+
+                <!-- Avaliações Realizadas -->
+                <div class="card progress-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Avaliações</h3>
+                    </div>
+                    <div class="progress-number">3</div>
+                    <div class="progress-label">Realizadas este Semestre</div>
+                </div>
+
+                <!-- Próxima Meta -->
+                <div class="card progress-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Próxima Meta</h3>
+                    </div>
+                    <div class="progress-number">85%</div>
+                    <div class="progress-label">Comunicação Eficaz</div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Competências -->
+            <div class="card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Mapa de Competências</h3>
+                    <p class="card-subtitle">Visualização do seu progresso nas 12 competências socioemocionais</p>
+                </div>
+                <div class="radar-chart">
+                    📊 Gráfico de Radar Interativo
+                    <br><small>Visualização das Competências</small>
+                </div>
+            </div>
+
+            <!-- Ações Rápidas -->
+            <div class="card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h3 class="card-title">Ações Rápidas</h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="autoavaliacao.html" class="action-btn">
+                        📝 Nova Autoavaliação
+                    </a>
+                    <a href="historico-avaliacoes.html" class="action-btn">
+                        📈 Ver Histórico
+                    </a>
+                    <a href="#" class="action-btn" onclick="gerarRelatorio()">
+                        📄 Gerar Relatório
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Inicializar dados do usuário
+        document.addEventListener('DOMContentLoaded', () => {
+            const userData = JSON.parse(localStorage.getItem('usuarioLogado'));
+            if (userData) {
+                document.getElementById('userName').textContent = userData.nome;
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        function loadDashboard() {
+            // Recarregar dashboard
+            window.location.reload();
+        }
+
+        function gerarRelatorio() {
+            alert('Funcionalidade de relatório será implementada em breve!');
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        function realizarLogout() {
+            if (confirm('Tem certeza que deseja sair do sistema?')) {
+                localStorage.removeItem('usuarioLogado');
+                window.location.href = 'index.html';
+            }
+        }
+    </script>
+</body>
+</html>
