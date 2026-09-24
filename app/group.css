@@ -4,3 +4,6 @@
 
 .confirm-modal{max-width:430px}.confirm-modal .modal-head{margin-bottom:24px}.confirm-modal .modal-head p{max-width:330px;line-height:1.6;margin-top:9px}
 
+.member-dashboard-action{margin-top:9px}.member-back{margin-bottom:16px}.member-roster{display:grid}.member-roster-item{width:100%;display:flex;align-items:center;gap:12px;padding:15px 2px;border:0;border-bottom:1px solid #f0f0f5;background:transparent;text-align:left;cursor:pointer;color:#7168c5}.member-roster-item:last-child{border-bottom:0}.member-roster-item:hover .member-roster-name strong{color:#6555d9}.member-roster-name{flex:1;min-width:0}.member-roster-name strong,.member-roster-name small{display:block}.member-roster-name strong{font-size:12px;color:#454861}.member-roster-name small{font-size:10px;color:#9da1b5;margin-top:4px}.member-roster-item>.pill{margin-left:auto}.member-info{margin-top:16px}.member-history-panel{margin-top:18px}
+@media(max-width:650px){.member-roster-item{flex-wrap:wrap}.member-roster-name{min-width:calc(100% - 50px)}.member-roster-item>.pill{margin-left:47px}.member-roster-item>svg{margin-left:auto}}
+

@@ -1,8 +1,9 @@
-import { Competency, DemoProfile, Evaluation, ExtensionGroup, GroupEvaluation, initialCompetencies, initialGroups, initialProfiles } from '../data/demo';
+import { Competency, DemoProfile, Evaluation, ExtensionGroup, GroupEvaluation, MemberEvaluation, ScoreMap, initialCompetencies, initialGroups, initialProfiles } from '../data/demo';
 
 const KEY = 'gptics-demo-v2';
-export type DemoState = { competencies: Competency[]; evaluations: Evaluation[]; draft: Record<string, number>; groupDraftNotes: string; groups: ExtensionGroup[]; groupEvaluations: GroupEvaluation[]; profiles: DemoProfile[] };
-export const emptyState = (): DemoState => ({ competencies: initialCompetencies, evaluations: [], draft: {}, groupDraftNotes:'', groups:initialGroups, groupEvaluations:[], profiles:initialProfiles });
+export type MemberDraft = { scores: ScoreMap; notes: string };
+export type DemoState = { competencies: Competency[]; evaluations: Evaluation[]; draft: Record<string, number>; groupDraftNotes: string; groups: ExtensionGroup[]; groupEvaluations: GroupEvaluation[]; memberEvaluations: MemberEvaluation[]; memberDrafts: Record<string, MemberDraft>; profiles: DemoProfile[] };
+export const emptyState = (): DemoState => ({ competencies: initialCompetencies, evaluations: [], draft: {}, groupDraftNotes:'', groups:initialGroups, groupEvaluations:[], memberEvaluations:[], memberDrafts:{}, profiles:initialProfiles });
 
 export function loadState(): DemoState {
   if (typeof window === 'undefined') return emptyState();
@@ -15,6 +16,8 @@ export function loadState(): DemoState {
         evaluations:saved.evaluations.filter((evaluation:Evaluation)=>evaluation.author==='professor'),
         groups:Array.isArray(saved.groups)?saved.groups:initialGroups,
         groupEvaluations:Array.isArray(saved.groupEvaluations)?saved.groupEvaluations:legacyStudentEvaluations.map((evaluation:Evaluation)=>({id:evaluation.id,groupId:'grupo-conexao',evaluatorStudentId:evaluation.studentId,date:evaluation.date,scores:evaluation.scores,notes:evaluation.notes})),
+        memberEvaluations:Array.isArray(saved.memberEvaluations)?saved.memberEvaluations:[],
+        memberDrafts:saved.memberDrafts&&typeof saved.memberDrafts==='object'?saved.memberDrafts:{},
         profiles:Array.isArray(saved.profiles)?saved.profiles:initialProfiles,
       };
     }

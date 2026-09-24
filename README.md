@@ -20,7 +20,7 @@ O workflow `.github/workflows/deploy.yml` compila o Next.js como site estático 
 
 ## O que é possível demonstrar
 
-- **Aluno:** avaliar as 12 competências do próprio grupo de extensão, escrever observações, manter um rascunho automático, consultar avaliações anteriores e exportar o histórico.
+- **Aluno:** avaliar o grupo de extensão, fazer a própria autoavaliação individual e avaliar cada colega do grupo nas 12 competências. Cada pessoa tem rascunho e registro separados; o aluno pode consultar e exportar seu histórico.
 - **Professor:** visualizar turmas, grupos, projetos e integrantes; criar e editar grupos, mover alunos entre eles, avaliar alunos individualmente e consultar relatórios da turma.
 - **Coordenação:** visualizar indicadores, filtrar relatórios gerais, administrar competências e cadastrar perfis com permissões demonstrativas.
 - **Dados:** as alterações feitas na interface ficam em `localStorage` no navegador. O botão “Restaurar demonstração” limpa esses dados e volta à amostra inicial. O CSV exportado corresponde aos filtros visíveis.
@@ -34,11 +34,11 @@ Os nomes, projetos e resultados são fictícios. A seleção de perfil é intenc
 | `app/` | Rotas `/` (apresentação) e `/demo` (protótipo), além dos estilos |
 | `src/components/LandingPage.tsx` | Site de introdução e navegação para os perfis |
 | `src/components/DemoApp.tsx` | Telas e interações dos três perfis |
-| `src/components/GroupExperience.tsx` | Avaliação e histórico do grupo pelo aluno |
+| `src/components/GroupExperience.tsx` | Avaliação coletiva e histórico do grupo pelo aluno |
+| `src/components/MemberExperience.tsx` | Autoavaliação individual, avaliação dos colegas e acompanhamento docente |
 | `src/components/ManagementPages.tsx` | Gestão de grupos, projetos, perfis e permissões |
 | `src/data/demo.ts` | Turmas, alunos, competências e avaliações fictícias |
 | `src/lib/storage.ts` | Persistência local do protótipo |
-| `legacy/` | HTML/CSS e arquivo ZIP da versão original, preservados como referência |
 
 ## Limites do protótipo
 

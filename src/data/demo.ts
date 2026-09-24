@@ -5,11 +5,13 @@ export type Student = { id: string; name: string; registration: string; classId:
 export type Evaluation = { id: string; studentId: string; author: 'aluno' | 'professor'; date: string; scores: ScoreMap; notes?: string };
 export type ExtensionGroup = { id: string; name: string; project: string; classId: string; studentIds: string[] };
 export type GroupEvaluation = { id: string; groupId: string; evaluatorStudentId: string; date: string; scores: ScoreMap; notes?: string };
-export type Permission = 'evaluate_group' | 'view_own_history' | 'manage_groups' | 'evaluate_students' | 'view_reports' | 'manage_competencies' | 'manage_profiles';
+export type MemberEvaluation = { id: string; groupId: string; evaluatorStudentId: string; studentId: string; date: string; scores: ScoreMap; notes?: string };
+export type Permission = 'evaluate_group' | 'evaluate_members' | 'view_own_history' | 'manage_groups' | 'evaluate_students' | 'view_reports' | 'manage_competencies' | 'manage_profiles';
 export type DemoProfile = { id: string; name: string; identifier: string; role: Role; permissions: Permission[] };
 
 export const permissionOptions: { id: Permission; label: string; description: string }[] = [
   { id:'evaluate_group', label:'Avaliar o próprio grupo', description:'Registrar a percepção do aluno sobre seu projeto.' },
+  { id:'evaluate_members', label:'Avaliar integrantes', description:'Autoavaliar-se e avaliar cada colega do grupo.' },
   { id:'view_own_history', label:'Ver próprio histórico', description:'Consultar avaliações enviadas pelo aluno.' },
   { id:'manage_groups', label:'Gerenciar grupos', description:'Criar projetos e distribuir alunos.' },
   { id:'evaluate_students', label:'Avaliar alunos', description:'Registrar avaliações docentes individuais.' },
@@ -18,7 +20,7 @@ export const permissionOptions: { id: Permission; label: string; description: st
   { id:'manage_profiles', label:'Gerenciar perfis', description:'Cadastrar perfis e configurar permissões.' },
 ];
 export const rolePermissions: Record<Role,Permission[]> = {
-  aluno:['evaluate_group','view_own_history'],
+  aluno:['evaluate_group','evaluate_members','view_own_history'],
   professor:['manage_groups','evaluate_students','view_reports'],
   coordenador:['view_reports','manage_competencies','manage_profiles'],
 };
@@ -64,6 +66,11 @@ export const demoGroupEvaluations: GroupEvaluation[] = [
   { id:'grupo-demo-2', groupId:'grupo-conexao', evaluatorStudentId:'ana', date:'2026-04-08', scores:{autoconhecimento:3,autorregulacao:2,resiliencia:3,empatia:4,comunicacao:3,conflitos:3,pensamento:3,criatividade:4,decisao:3,colaboracao:4,adaptabilidade:3,tempo:2} },
 ];
 
+export const demoMemberEvaluations: MemberEvaluation[] = [
+  { id:'integrante-demo-1', groupId:'grupo-conexao', evaluatorStudentId:'ana', studentId:'ana', date:'2026-08-14', scores:{autoconhecimento:4,autorregulacao:4,resiliencia:4,empatia:4,comunicacao:4,conflitos:3,pensamento:4,criatividade:4,decisao:4,colaboracao:4,adaptabilidade:4,tempo:3}, notes:'Quero melhorar a organização das entregas.' },
+  { id:'integrante-demo-2', groupId:'grupo-conexao', evaluatorStudentId:'ana', studentId:'bruno', date:'2026-08-14', scores:{autoconhecimento:4,autorregulacao:4,resiliencia:4,empatia:5,comunicacao:4,conflitos:4,pensamento:4,criatividade:4,decisao:4,colaboracao:5,adaptabilidade:4,tempo:4}, notes:'Contribui muito nas conversas com a comunidade.' },
+];
+
 export const initialProfiles: DemoProfile[] = [
   { id:'perfil-ana', name:'Ana Silva Santos', identifier:'2021001', role:'aluno', permissions:rolePermissions.aluno },
   { id:'perfil-marina', name:'Marina Oliveira', identifier:'PROF001', role:'professor', permissions:rolePermissions.professor },
@@ -80,4 +87,5 @@ export const demoEvaluations: Evaluation[] = [
 export const mean = (values: number[]) => values.length ? values.reduce((a,b) => a+b,0) / values.length : 0;
 export const evaluationMean = (evaluation: Evaluation) => mean(Object.values(evaluation.scores));
 export const groupEvaluationMean = (evaluation: GroupEvaluation) => mean(Object.values(evaluation.scores));
+export const memberEvaluationMean = (evaluation: MemberEvaluation) => mean(Object.values(evaluation.scores));
 export const formatDate = (date: string) => new Date(date.includes('T') ? date : `${date}T12:00:00`).toLocaleDateString('pt-BR');
