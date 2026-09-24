@@ -1,7 +1,11 @@
-import path from 'node:path';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  outputFileTracingRoot: path.resolve(process.cwd()),
-  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
-};
-export default nextConfig;
+  output: 'export',
+  basePath: '/IC_INTERFACE_V1',
+  assetPrefix: '/IC_INTERFACE_V1/',
+  images: {
+    unoptimized: true,
+  },
+}
+
+export default nextConfig
