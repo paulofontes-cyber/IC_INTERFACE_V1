@@ -2,6 +2,9 @@
 
 Interface acadêmica de demonstração para acompanhar competências socioemocionais em projetos de extensão feitos em grupo. O projeto original era uma coleção de páginas HTML sem um estado compartilhado. Esta versão usa React com Next.js e mantém os três percursos da proposta: aluno, professor e coordenação.
 
+## Demonstração 
+`https://paulofontes-cyber.github.io/IC_INTERFACE_V1/`
+
 ## Executar
 
 ```bash
