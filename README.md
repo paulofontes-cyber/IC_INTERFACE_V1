@@ -9,7 +9,11 @@ npm install
 npm run dev
 ```
 
-Abra `http://localhost:3000` para a apresentação do projeto. O protótipo interativo fica em `/demo` e cada cartão de perfil na página inicial abre a demonstração correspondente. Para validar a compilação, use `npm run typecheck` e `npm run build`.
+Abra `http://localhost:3000/IC_INTERFACE_V1/` para a apresentação do projeto. O protótipo interativo fica em `/IC_INTERFACE_V1/demo/` e cada cartão de perfil na página inicial abre a demonstração correspondente. Para validar a compilação, use `npm run typecheck` e `npm run build`.
+
+## Publicação no GitHub Pages
+
+O workflow `.github/workflows/deploy.yml` compila o Next.js como site estático e publica a pasta `out`. Em **Settings → Pages → Build and deployment → Source**, selecione **GitHub Actions**. A URL do projeto é `https://paulofontes-cyber.github.io/IC_INTERFACE_V1/`.
 
 ## O que é possível demonstrar
 

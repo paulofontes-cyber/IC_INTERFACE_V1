@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { Activity, ArrowDownToLine, ArrowLeft, ArrowRight, BarChart3, BookOpen, Check, CheckCircle2, ChevronDown, ClipboardCheck, Clock3, FileBarChart2, GraduationCap, LayoutDashboard, Menu, Pencil, Plus, RotateCcw, Save, Search, Settings2, Sparkles, Trash2, Users, X } from 'lucide-react';
 import { classes, Competency, demoEvaluations, demoGroupEvaluations, DemoProfile, Evaluation, evaluationMean, ExtensionGroup, formatDate, GroupEvaluation, groupEvaluationMean, initialCompetencies, mean, Role, ScoreMap, students } from '../data/demo';
 import { DemoState, emptyState, loadState, saveState } from '../lib/storage';
@@ -31,8 +32,8 @@ function Empty({title,description,action}:{title:string;description:string;actio
 function ScoreBar({value,max=5}:{value:number;max?:number}) { return <div className="score-track"><span style={{width:`${Math.max(0,Math.min(100,value/max*100))}%`}}/></div>; }
 function Metric({label,value,detail,icon:Icon,tone='violet'}:{label:string;value:string;detail:string;icon:typeof Activity;tone?:string}) { return <div className="metric card"><div className={`metric-icon ${tone}`}><Icon size={20}/></div><p>{label}</p><strong>{value}</strong><small>{detail}</small></div>; }
 
-export default function DemoApp({initialRole='aluno'}:{initialRole?:Role}) {
-  const [role,setRole]=useState<Role>(initialRole);
+export default function DemoApp() {
+  const [role,setRole]=useState<Role>('aluno');
   const [page,setPage]=useState<Page>('dashboard');
   const [state,setState]=useState<DemoState>(emptyState);
   const [ready,setReady]=useState(false);
@@ -50,6 +51,8 @@ export default function DemoApp({initialRole='aluno'}:{initialRole?:Role}) {
   const [notes,setNotes]=useState('');
 
   useEffect(()=>{
+    const perfil=new URLSearchParams(window.location.search).get('perfil');
+    if(perfil==='professor'||perfil==='coordenador') setRole(perfil);
     setState(loadState());
     setReady(true);
   },[]);
@@ -133,7 +136,7 @@ export default function DemoApp({initialRole='aluno'}:{initialRole?:Role}) {
       <div className="role-picker"><label htmlFor="role-select">Explorar como</label><div className="select-wrap"><select id="role-select" value={role} onChange={e=>switchRole(e.target.value as Role)}><option value="aluno">Aluno</option><option value="professor">Professor</option><option value="coordenador">Coordenação</option></select><ChevronDown size={17}/></div></div>
       <div className="nav-caption">MENU PRINCIPAL</div>
       <nav aria-label="Navegação principal">{rolePages[role].map(item=><button key={item.id} className={`nav-link ${page===item.id?'active':''}`} onClick={()=>navigate(item.id)}><item.icon size={19}/><span>{item.label}</span>{page===item.id&&<span className="nav-dot"/>}</button>)}</nav>
-      <div className="sidebar-bottom"><div className="demo-tip"><div className="tip-icon"><Sparkles size={17}/></div><strong>Protótipo interativo</strong><p>Explore os três perfis. As alterações ficam salvas neste navegador.</p></div><a className="reset-button" href="/"><ArrowLeft size={16}/> Voltar à apresentação</a><button className="reset-button" onClick={resetDemo}><RotateCcw size={16}/> Restaurar demonstração</button><div className="sidebar-user"><div className="avatar">{role==='aluno'?'AS':role==='professor'?'PM':'CO'}</div><div><strong>{role==='aluno'?'Ana Silva':role==='professor'?'Prof. Marina':'Coordenação'}</strong><small>{roleLabels[role]} · acesso demo</small></div></div></div>
+      <div className="sidebar-bottom"><div className="demo-tip"><div className="tip-icon"><Sparkles size={17}/></div><strong>Protótipo interativo</strong><p>Explore os três perfis. As alterações ficam salvas neste navegador.</p></div><Link className="reset-button" href="/"><ArrowLeft size={16}/> Voltar à apresentação</Link><button className="reset-button" onClick={resetDemo}><RotateCcw size={16}/> Restaurar demonstração</button><div className="sidebar-user"><div className="avatar">{role==='aluno'?'AS':role==='professor'?'PM':'CO'}</div><div><strong>{role==='aluno'?'Ana Silva':role==='professor'?'Prof. Marina':'Coordenação'}</strong><small>{roleLabels[role]} · acesso demo</small></div></div></div>
     </aside>
     {mobileOpen&&<button className="mobile-scrim" onClick={()=>setMobileOpen(false)} aria-label="Fechar menu"/>}
     <main className="main"><header className="topbar"><button className="mobile-menu icon-button" onClick={()=>setMobileOpen(true)} aria-label="Abrir menu"><Menu size={22}/></button><div className="breadcrumbs">GPTICS <span>/</span> {roleLabels[role]} <span>/</span> <strong>{title}</strong></div><Pill tone="blue">Ambiente de demonstração</Pill></header>
