@@ -1,14 +1,7 @@
+import path from 'node:path';
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
-}
-
-export default nextConfig
+  outputFileTracingRoot: path.resolve(process.cwd()),
+  distDir: process.env.NODE_ENV === 'development' ? '.next-dev' : '.next',
+};
+export default nextConfig;
